@@ -1,6 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using VRCZ.App.Services;
 using VRCZ.App.ViewMessages.TrackedEntities;
 using VRCZ.Core.Models;
 using VRCZ.Core.Services;
@@ -13,16 +15,26 @@ public partial class FriendItemViewModel : ViewModelBase
     [ObservableProperty] private LimitedUser _user;
     [ObservableProperty] private UserLocation? _location;
 
+    public Task<Bitmap?>? UserAvatar =>
+        UserAvatarUrl is not null ? _remoteImageLoadService.LoadImageAsync(UserAvatarUrl) : null;
+
+    private string? UserAvatarUrl =>
+        !string.IsNullOrEmpty(User.UserIcon) ? User.UserIcon :
+        !string.IsNullOrEmpty(User.CurrentAvatarThumbnailImageUrl) ? User.CurrentAvatarThumbnailImageUrl :
+        null;
+
     [ObservableProperty] private Instance? _instance;
     [ObservableProperty] private World? _world;
 
     private readonly VRChatTrackedEntitiesService _trackedEntitiesService;
+    private readonly RemoteImageLoadService _remoteImageLoadService;
 
     public FriendItemViewModel(WeakReferenceMessenger weakReferenceMessenger, LimitedUser limitedUser,
-        VRChatTrackedEntitiesService trackedEntitiesService)
+        VRChatTrackedEntitiesService trackedEntitiesService, RemoteImageLoadService remoteImageLoadService)
     {
         _user = limitedUser;
         _trackedEntitiesService = trackedEntitiesService;
+        _remoteImageLoadService = remoteImageLoadService;
 
         if (limitedUser.Id is not { } userId)
             throw new ArgumentException("User ID is required", nameof(limitedUser));
@@ -47,6 +59,12 @@ public partial class FriendItemViewModel : ViewModelBase
 
             LoadDataCommand.Execute(null);
         });
+
+        PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName == nameof(User))
+                OnPropertyChanged(nameof(UserAvatar));
+        };
     }
 
     [RelayCommand]

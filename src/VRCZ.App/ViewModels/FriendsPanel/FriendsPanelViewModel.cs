@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging;
+using VRCZ.App.Services;
 using VRCZ.App.ViewMessages.TrackedEntities;
 using VRCZ.Core.Services;
 
@@ -12,11 +13,12 @@ public class FriendsPanelViewModel : ViewModelBase
     private readonly WeakReferenceMessenger _weakReferenceMessenger;
 
     public FriendsPanelViewModel(VRChatTrackedEntitiesService trackedEntitiesService,
-        WeakReferenceMessenger weakReferenceMessenger)
+        WeakReferenceMessenger weakReferenceMessenger, RemoteImageLoadService remoteImageLoadService)
     {
         _weakReferenceMessenger = weakReferenceMessenger;
         var friends = trackedEntitiesService.GetFriends()
-            .Select(user => new FriendItemViewModel(weakReferenceMessenger, user, trackedEntitiesService))
+            .Select(user =>
+                new FriendItemViewModel(weakReferenceMessenger, user, trackedEntitiesService, remoteImageLoadService))
             .ToArray();
 
         Friends = new ObservableCollection<FriendItemViewModel>(friends);
@@ -27,7 +29,8 @@ public class FriendsPanelViewModel : ViewModelBase
                 if (r.Friends.Any(f => f.User.Id == message.Value.Id))
                     return;
 
-                r.Friends.Add(new FriendItemViewModel(r._weakReferenceMessenger, message.Value, trackedEntitiesService));
+                r.Friends.Add(new FriendItemViewModel(r._weakReferenceMessenger, message.Value, trackedEntitiesService,
+                    remoteImageLoadService));
             });
 
         weakReferenceMessenger.Register<FriendsPanelViewModel, FriendRemovedMessage>(this, (r, message) =>
