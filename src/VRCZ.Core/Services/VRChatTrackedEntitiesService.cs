@@ -53,10 +53,14 @@ public class VRChatTrackedEntitiesService(VRChatApiClient vrchatApiClient)
 
         _friends.AddOrUpdate(user.Id, user, (_, _) => user);
 
-        if (_userLocations.TryGetValue(user.Id, out var userLocation) &&
-            userLocation.ToLocationString() != user.Location)
+        if (user.Location is { } newLocationString)
         {
-            AddOrUpdateUserLocation(user.Id, userLocation);
+            var newUserLocation = UserLocation.Parse(newLocationString);
+
+            if (!_userLocations.TryGetValue(user.Id, out var userLocation) || userLocation != newUserLocation)
+            {
+                AddOrUpdateUserLocation(user.Id, newUserLocation);
+            }
         }
 
         if (userExist)
