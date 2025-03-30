@@ -400,11 +400,13 @@ public class VRChatTrackedEntitiesService(VRChatApiClient vrchatApiClient)
 
             if (location.WorldId is { } worldId)
             {
-                await GetCachedWorldAsync(worldId);
-
                 if (location.InstanceId is { } instanceId)
                 {
                     await GetCachedInstanceAsync(worldId, instanceId);
+                }
+                else
+                {
+                    await GetCachedWorldAsync(worldId);
                 }
             }
 
