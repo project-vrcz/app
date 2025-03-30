@@ -233,19 +233,21 @@ public class VRChatTrackedEntitiesService(VRChatApiClient vrchatApiClient)
     {
         var instancesToRemove = _instances
             .Where(instance =>
-                _userLocations.All(location => location.Value.InstanceId != instance.Value.Id))
-            .ToArray();
-
-        var worldsToRemove = _worlds
-            .Where(world =>
-                _userLocations.All(location => location.Value.WorldId != world.Value.Id) &&
-                _instances.All(instance => instance.Value.WorldId != world.Value.Id))
+                _userLocations.All(location =>
+                    location.Value.InstanceId != instance.Value.InstanceId &&
+                    location.Value.WorldId != instance.Value.WorldId))
             .ToArray();
 
         foreach (var instance in instancesToRemove)
         {
             _instances.TryRemove(instance);
         }
+
+        var worldsToRemove = _worlds
+            .Where(world =>
+                _userLocations.All(location => location.Value.WorldId != world.Value.Id) &&
+                _instances.All(instance => instance.Value.WorldId != world.Value.Id))
+            .ToArray();
 
         foreach (var world in worldsToRemove)
         {
