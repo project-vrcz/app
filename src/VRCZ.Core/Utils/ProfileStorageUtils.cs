@@ -15,6 +15,11 @@ public static class ProfileStorageUtils
         return Path.Combine(appDataPath, ProfileStorageRootFolderName);
     }
 
+    public static string GetImageCacheRootPath()
+    {
+        return Path.Combine(GetProfileStorageRootPath(), "ImageCache");
+    }
+
     public static string GetUserProfilesStoragePath()
     {
         return Path.Combine(GetProfileStorageRootPath(), "Profiles");

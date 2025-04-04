@@ -15,10 +15,7 @@ public partial class FriendItemViewModel : ViewModelBase
     [ObservableProperty] private LimitedUser _user;
     [ObservableProperty] private UserLocation? _location;
 
-    public Task<Bitmap?>? UserAvatar =>
-        UserAvatarUrl is not null ? _remoteImageLoadService.LoadImageAsync(UserAvatarUrl) : null;
-
-    private string? UserAvatarUrl =>
+    public string? UserAvatarUrl =>
         !string.IsNullOrEmpty(User.UserIcon) ? User.UserIcon :
         !string.IsNullOrEmpty(User.CurrentAvatarThumbnailImageUrl) ? User.CurrentAvatarThumbnailImageUrl :
         null;
@@ -27,14 +24,12 @@ public partial class FriendItemViewModel : ViewModelBase
     [ObservableProperty] private World? _world;
 
     private readonly VRChatTrackedEntitiesService _trackedEntitiesService;
-    private readonly RemoteImageLoadService _remoteImageLoadService;
 
     public FriendItemViewModel(WeakReferenceMessenger weakReferenceMessenger, LimitedUser limitedUser,
-        VRChatTrackedEntitiesService trackedEntitiesService, RemoteImageLoadService remoteImageLoadService)
+        VRChatTrackedEntitiesService trackedEntitiesService)
     {
         _user = limitedUser;
         _trackedEntitiesService = trackedEntitiesService;
-        _remoteImageLoadService = remoteImageLoadService;
 
         if (limitedUser.Id is not { } userId)
             throw new ArgumentException("User ID is required", nameof(limitedUser));
@@ -63,7 +58,7 @@ public partial class FriendItemViewModel : ViewModelBase
         PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(User))
-                OnPropertyChanged(nameof(UserAvatar));
+                OnPropertyChanged(nameof(UserAvatarUrl));
         };
     }
 

@@ -15,7 +15,6 @@ namespace VRCZ.App.ViewModels.Views;
 
 public partial class ProfileSelectionViewModel(
     UserProfileService userProfileService,
-    RemoteImageLoadService remoteImageLoadService,
     ManagedUserProfileService managedUserProfileService,
     VRChatAuthService vrchatAuthService,
     WeakReferenceMessenger weakReferenceMessenger,
@@ -32,7 +31,7 @@ public partial class ProfileSelectionViewModel(
 
         Profiles = profiles
             .Select(profile =>
-                new UserProfileItemViewModel(profile, remoteImageLoadService, managedUserProfileService,
+                new UserProfileItemViewModel(profile, managedUserProfileService,
                     weakReferenceMessenger, HandleTwoFactor))
             .ToArray();
 

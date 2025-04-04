@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:ValueConverters;assembly=ValueConverters.Avalonia"
              xmlns:views="clr-namespace:VRCZ.App.ViewModels.Views"
              xmlns:viewModels="clr-namespace:VRCZ.App.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:VRCZ.App.Controls.AsyncImageLoader"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="views:ProfileSelectionViewModel"
              x:Class="VRCZ.App.Views.ProfileSelectionView">
@@ -22,8 +23,8 @@
 
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto">
         <u:Banner Type="Error"
-            IsVisible="{Binding ErrorMessage, Converter={StaticResource NullToBoolInvertedConverter}}"
-            Header="Failed to load Profile" Content="{Binding ErrorMessage}" />
+                  IsVisible="{Binding ErrorMessage, Converter={StaticResource NullToBoolInvertedConverter}}"
+                  Header="Failed to load Profile" Content="{Binding ErrorMessage}" />
         <ItemsControl Grid.Row="1" ItemsSource="{Binding Profiles}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -33,7 +34,8 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="viewModels:UserProfileItemViewModel">
                     <StackPanel>
-                        <u:Avatar Classes="ExtraLarge" Source="{Binding ProfileImage^}"
+                        <u:Avatar Classes="ExtraLarge"
+                                  asyncImageLoader:UrsaAvatarLoader.Source="{Binding  UserProfile.AvatarUrl}"
                                   Command="{Binding LoadProfileCommand}"
                                   RenderOptions.BitmapInterpolationMode="HighQuality">
                             <u:Avatar.Styles>

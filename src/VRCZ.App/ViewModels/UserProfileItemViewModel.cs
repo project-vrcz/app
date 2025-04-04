@@ -11,13 +11,11 @@ namespace VRCZ.App.ViewModels;
 
 public partial class UserProfileItemViewModel(
     UserProfile userProfile,
-    RemoteImageLoadService remoteImageLoadService,
     ManagedUserProfileService managedUserProfileService,
     WeakReferenceMessenger weakReferenceMessenger,
     Func<TwoFactorRequired_requiresTwoFactorAuth[], Task> handleTwoFactor) : ViewModelBase
 {
     public UserProfile UserProfile => userProfile;
-    public Task<Bitmap?> ProfileImage => remoteImageLoadService.LoadImageAsync(UserProfile.AvatarUrl);
 
     public event EventHandler<Exception>? ErrorOccured;
 

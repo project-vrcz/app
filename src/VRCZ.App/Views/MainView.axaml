@@ -6,8 +6,8 @@
              xmlns:u="https://irihi.tech/ursa"
              xmlns:mainView="clr-namespace:VRCZ.App.ViewModels.Views.MainView"
              xmlns:converters="clr-namespace:VRCZ.App.Converters"
-             xmlns:models="clr-namespace:VRCZ.VRChatApi.Generated.Models;assembly=VRCZ.VRChatApi.Generated"
              xmlns:friendsPanel="clr-namespace:VRCZ.App.ViewModels.FriendsPanel"
+             xmlns:asyncImageLoader="clr-namespace:VRCZ.App.Controls.AsyncImageLoader"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="mainView:MainViewModel"
              x:Class="VRCZ.App.Views.MainView">
@@ -138,13 +138,16 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="friendsPanel:FriendItemViewModel">
                                 <Grid ColumnDefinitions="Auto,*" Margin="0,2">
-                                    <u:Avatar Source="{Binding UserAvatar^}"
+                                    <u:Avatar asyncImageLoader:UrsaAvatarLoader.Source="{Binding UserAvatarUrl}"
                                               RenderOptions.BitmapInterpolationMode="HighQuality">
                                         <u:Avatar.Styles>
                                             <Style Selector="Image">
                                                 <Setter Property="Stretch" Value="UniformToFill" />
                                             </Style>
                                         </u:Avatar.Styles>
+                                        <u:Avatar.Source>
+
+                                        </u:Avatar.Source>
                                     </u:Avatar>
                                     <StackPanel Grid.Column="1" Margin="5">
                                         <Interaction.Behaviors>
@@ -162,7 +165,8 @@
                                             </TextBlock>
                                             <TextBlock FontWeight="Bold" Text="{Binding User.DisplayName}" />
                                         </StackPanel>
-                                        <TextBlock TextWrapping="Wrap" IsVisible="{Binding !Instance, Converter={StaticResource NullToBoolConverter}}">
+                                        <TextBlock TextWrapping="Wrap"
+                                                   IsVisible="{Binding !Instance, Converter={StaticResource NullToBoolConverter}}">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0}#{1} ({2}/{3}) ({4})">
                                                     <Binding Path="World.Name" FallbackValue="Offline" />
