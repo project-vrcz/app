@@ -40,7 +40,7 @@ public class VRChatAuthService(UserProfileService userProfileService, VRChatApiC
             throw new UnexpectedApiBehaviourException("Auth User endpoint response null body");
 
         if (result.CurrentUser is not null)
-            return new LoginResult(LoginResultType.Success);
+            return new LoginResult(LoginResultType.Success, User: result.CurrentUser);
 
         if (result.TwoFactorRequired is not null)
         {
@@ -127,7 +127,10 @@ public class VRChatAuthService(UserProfileService userProfileService, VRChatApiC
                 throw;
             }
 
-            userResponse = await vrchatApiClient.Auth.User.GetAsUserGetResponseAsync();
+            userResponse = new UserRequestBuilder.UserGetResponse
+            {
+                CurrentUser = loginResult.User
+            };
         }
 
         if (userResponse?.TwoFactorRequired is { } twoFactorRequired)
