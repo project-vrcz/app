@@ -8,6 +8,6 @@ public class AsyncImageLoaderFactory(HttpClient httpClient)
 {
     public IAsyncImageLoader Create()
     {
-        return new DiskCachedWebImageLoader(httpClient, false, ProfileStorageUtils.GetImageCacheRootPath());
+        return new AppWebImageLoader(httpClient, false, ProfileStorageUtils.GetImageCacheRootPath());
     }
 }
