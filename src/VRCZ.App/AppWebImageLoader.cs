@@ -63,7 +63,9 @@ public class AppWebImageLoader(
     private string GetCacheKey(string urlPath)
     {
         var pathParts = urlPath.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();
-        pathParts = pathParts[3..];
+        pathParts = pathParts[3..]
+            .Select(part => HttpUtility.UrlEncode(part))
+            .ToList();
 
         if (pathParts.Count == 2)
             pathParts.Add("file");
