@@ -1,4 +1,5 @@
-﻿using AsyncImageLoader.Loaders;
+﻿using System.Web;
+using AsyncImageLoader.Loaders;
 using Avalonia.Media.Imaging;
 
 namespace VRCZ.App;
@@ -10,14 +11,14 @@ public class AppWebImageLoader(
 {
     private readonly string _cacheFolder = cacheFolder;
 
-    protected override Task<Bitmap?> LoadFromGlobalCache(string url)
+    protected override async Task<Bitmap?> LoadFromGlobalCache(string url)
     {
         var cacheFilePath = GetCacheFilePath(url);
 
         if (cacheFilePath is not null && File.Exists(cacheFilePath))
-            return Task.FromResult<Bitmap?>(new Bitmap(cacheFilePath));
+            return await Task.Run(() => Task.FromResult(new Bitmap(cacheFilePath)));
 
-        return base.LoadFromGlobalCache(url);
+        return await base.LoadFromGlobalCache(url);
     }
 
     protected override async Task SaveToGlobalCache(string url, byte[] imageBytes)
