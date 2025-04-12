@@ -1,15 +1,14 @@
-using AsyncImageLoader;
-using AsyncImageLoader.Loaders;
+using System.Net.Http.Headers;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using HotAvalonia;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using VRCZ.App.Controls.AsyncImageLoader;
 using VRCZ.App.Pages;
-using VRCZ.App.Services;
 using VRCZ.App.ViewModels;
 using VRCZ.App.ViewModels.Pages;
+using VRCZ.Core.Services;
 
 namespace VRCZ.App;
 
@@ -17,20 +16,29 @@ public class App : Application
 {
     private readonly IServiceProvider _serviceProvider = null!;
 
-    private readonly IAsyncImageLoader _asyncImageLoader;
+    public readonly AppWebImageLoader AsyncImageLoader;
+
+#pragma warning disable CS8600
+#pragma warning disable CS8603
+    public new static App Current => (App)Application.Current;
+#pragma warning restore CS8603
+#pragma warning restore CS8600
 
     public App(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
 
-        _asyncImageLoader = _serviceProvider.GetRequiredService<AsyncImageLoaderFactory>().Create();
+        AsyncImageLoader = _serviceProvider.GetRequiredService<AppWebImageLoader>();
     }
 
     public App()
     {
         // Make Previewer happy
 
-        _asyncImageLoader = new RamCachedWebImageLoader();
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("VRCZ AvaloniaUI Previewer"));
+
+        AsyncImageLoader = new AppWebImageLoader(new RemoteImageService(httpClient, new MemoryCache(new MemoryCacheOptions())));
     }
 
     public override void Initialize()
@@ -53,15 +61,6 @@ public class App : Application
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
-
-        ImageLoader.AsyncImageLoader.Dispose();
-        ImageLoader.AsyncImageLoader = _asyncImageLoader;
-
-        ImageBrushLoader.AsyncImageLoader.Dispose();
-        ImageBrushLoader.AsyncImageLoader = _asyncImageLoader;
-
-        UrsaAvatarLoader.AsyncImageLoader.Dispose();
-        UrsaAvatarLoader.AsyncImageLoader = _asyncImageLoader;
 
         base.OnFrameworkInitializationCompleted();
     }

@@ -7,7 +7,7 @@
              xmlns:mainView="clr-namespace:VRCZ.App.ViewModels.Views.MainView"
              xmlns:converters="clr-namespace:VRCZ.App.Converters"
              xmlns:friendsPanel="clr-namespace:VRCZ.App.ViewModels.FriendsPanel"
-             xmlns:asyncImageLoader="clr-namespace:VRCZ.App.Controls.AsyncImageLoader"
+             xmlns:controls="clr-namespace:VRCZ.App.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="mainView:MainViewModel"
              x:Class="VRCZ.App.Views.MainView">
@@ -138,8 +138,8 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="friendsPanel:FriendItemViewModel">
                                 <Grid ColumnDefinitions="Auto,*" Margin="0,2">
-                                    <u:Avatar asyncImageLoader:UrsaAvatarLoader.Source="{Binding UserAvatarUrl}"
-                                              RenderOptions.BitmapInterpolationMode="HighQuality">
+                                    <u:Avatar controls:AsyncImageLoader.Source="{Binding UserAvatarUrl}"
+                                              RenderOptions.BitmapInterpolationMode="LowQuality">
                                         <u:Avatar.Styles>
                                             <Style Selector="Image">
                                                 <Setter Property="Stretch" Value="UniformToFill" />

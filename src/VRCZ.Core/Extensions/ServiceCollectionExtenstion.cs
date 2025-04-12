@@ -8,6 +8,8 @@ public static class ServiceCollectionExtenstion
 {
     public static IServiceCollection AddVRCZCore(this IServiceCollection services)
     {
+        services.AddMemoryCache();
+
         services.AddKiotaHandlers();
 
         services.AddSingleton<VRChatAuthService>();
@@ -32,6 +34,15 @@ public static class ServiceCollectionExtenstion
         {
             client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("VRCZ.Core", "snapshot"));
         });
+
+        services.AddSingleton<RemoteImageService>();
+        services.AddHttpClient<RemoteImageService>(client =>
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("VRCZ.App", "snapshot"))
+            )
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(2),
+            });
 
         services.AddHostedService<UserProfileHostService>();
 

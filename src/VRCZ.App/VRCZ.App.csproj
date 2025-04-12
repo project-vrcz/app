@@ -25,7 +25,7 @@
         <PackageReference Include="Irihi.Ursa.Themes.Semi" />
         <PackageReference Include="Semi.Avalonia" />
         <PackageReference Include="ValueConverters.Avalonia" />
-        <PackageReference Include="AsyncImageLoader.Avalonia" />
+<!--        <PackageReference Include="AsyncImageLoader.Avalonia" />-->
     </ItemGroup>
 
     <ItemGroup>

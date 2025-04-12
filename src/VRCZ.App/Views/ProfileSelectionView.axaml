@@ -6,7 +6,7 @@
              xmlns:converters="clr-namespace:ValueConverters;assembly=ValueConverters.Avalonia"
              xmlns:views="clr-namespace:VRCZ.App.ViewModels.Views"
              xmlns:viewModels="clr-namespace:VRCZ.App.ViewModels"
-             xmlns:asyncImageLoader="clr-namespace:VRCZ.App.Controls.AsyncImageLoader"
+             xmlns:controls="clr-namespace:VRCZ.App.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="views:ProfileSelectionViewModel"
              x:Class="VRCZ.App.Views.ProfileSelectionView">
@@ -35,7 +35,7 @@
                 <DataTemplate x:DataType="viewModels:UserProfileItemViewModel">
                     <StackPanel>
                         <u:Avatar Classes="ExtraLarge"
-                                  asyncImageLoader:UrsaAvatarLoader.Source="{Binding  UserProfile.AvatarUrl}"
+                                  controls:AsyncImageLoader.Source="{Binding UserProfile.AvatarUrl}"
                                   Command="{Binding LoadProfileCommand}"
                                   RenderOptions.BitmapInterpolationMode="HighQuality">
                             <u:Avatar.Styles>
