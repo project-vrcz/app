@@ -1,4 +1,6 @@
-﻿using System.Web;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Web;
 using AsyncImageLoader.Loaders;
 using Avalonia.Media.Imaging;
 
@@ -65,7 +67,17 @@ public class AppWebImageLoader(
     {
         var pathParts = urlPath.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();
         pathParts = pathParts[3..]
-            .Select(part => HttpUtility.UrlEncode(part))
+            .Select(part =>
+            {
+                // Prevent Invalid Path Characters
+                var urlEncodedPart = HttpUtility.UrlEncode(part);
+
+                // For case insensitivity file systems
+                var hash = Convert.ToHexStringLower(MD5.HashData(Encoding.UTF8.GetBytes(part)))
+                    .Substring(0, 5);
+
+                return urlEncodedPart + "_" + hash;
+            })
             .ToList();
 
         if (pathParts.Count == 2)
