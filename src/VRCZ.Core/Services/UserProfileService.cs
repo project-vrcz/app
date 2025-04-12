@@ -1,13 +1,17 @@
 ﻿using System.Net;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using VRCZ.Core.Exceptions;
 using VRCZ.Core.Models;
+using VRCZ.Core.Services.Database;
 using VRCZ.Core.Utils;
 
 namespace VRCZ.Core.Services;
 
-public class UserProfileService(ILogger<UserProfileService> logger)
+public class UserProfileService(
+    ILogger<UserProfileService> logger,
+    IServiceScopeFactory serviceScopeFactory)
 {
     public bool IsProfileLoaded => CurrentProfile is not null && CurrentProfileSecret is not null;
 
@@ -77,11 +81,19 @@ public class UserProfileService(ILogger<UserProfileService> logger)
             CookieContainer.Add(cookie);
         }
 
+        await using var scope = serviceScopeFactory.CreateAsyncScope();
+        var databaseService = scope.ServiceProvider.GetRequiredService<DatabaseInitializeMigrateService>();
+
+        logger.LogInformation("Loading database for profile {ProfileId}", profileId);
+        await databaseService.EnsureDatabaseReadyAsync();
+        logger.LogInformation("Database for profile {ProfileId} READY", profileId);
+
         logger.LogInformation("Profile {ProfileId} loaded", profileId);
         ProfileChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private static async Task<(UserProfile Profile, UserProfileSecret ProfileSecret)> ParseUserProfile(string metadataPath, string secretPath)
+    private static async Task<(UserProfile Profile, UserProfileSecret ProfileSecret)> ParseUserProfile(
+        string metadataPath, string secretPath)
     {
         var rawMetaData = await File.ReadAllTextAsync(metadataPath);
         var rawSecret = await File.ReadAllTextAsync(secretPath);
@@ -116,7 +128,8 @@ public class UserProfileService(ILogger<UserProfileService> logger)
         ProfileChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public async Task CreateProfileAsync(string profileId, string username, string displayName, string avatarUrl, string password)
+    public async Task CreateProfileAsync(string profileId, string username, string displayName, string avatarUrl,
+        string password)
     {
         var profileStoragePath = ProfileStorageUtils.GetUserProfileStoragePath(profileId);
         var profileMetaDataPath = Path.Combine(profileStoragePath, ProfileStorageUtils.UserProfileMetaDataFileName);

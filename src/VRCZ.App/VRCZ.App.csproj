@@ -25,7 +25,10 @@
         <PackageReference Include="Irihi.Ursa.Themes.Semi" />
         <PackageReference Include="Semi.Avalonia" />
         <PackageReference Include="ValueConverters.Avalonia" />
-<!--        <PackageReference Include="AsyncImageLoader.Avalonia" />-->
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>

@@ -28,16 +28,22 @@ internal sealed class Program
     [SupportedOSPlatform("windows")]
     [SupportedOSPlatform("linux")]
     [SupportedOSPlatform("macos")]
-    [RequiresDynamicCode("Calls Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder()")]
     public static void Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .Enrich.FromLogContext()
-            .WriteTo.Console(theme: AnsiConsoleTheme.Literate, applyThemeToRedirectedOutput: true)
+            .WriteTo.Console()
             .WriteTo.Debug()
             .CreateLogger();
 
+        var hostBuilder = CreateHostBuilder(args);
+
+        RunApp(hostBuilder, args);
+    }
+
+    public static HostApplicationBuilder CreateHostBuilder(string[] args)
+    {
         var hostBuilder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings
         {
             Args = args,
@@ -54,7 +60,7 @@ internal sealed class Program
         hostBuilder.Services.AddVRCZCore();
         hostBuilder.Services.AddVRCZApp();
 
-        RunApp(hostBuilder, args);
+        return hostBuilder;
     }
 
     private static AppBuilder ConfigAvaloniaAppBuilder(AppBuilder appBuilder)

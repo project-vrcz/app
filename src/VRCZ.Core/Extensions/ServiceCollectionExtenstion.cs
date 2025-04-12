@@ -1,6 +1,8 @@
 ﻿using System.Net.Http.Headers;
 using Microsoft.Extensions.DependencyInjection;
+using VRCZ.Core.DbContexts;
 using VRCZ.Core.Services;
+using VRCZ.Core.Services.Database;
 
 namespace VRCZ.Core.Extensions;
 
@@ -14,6 +16,10 @@ public static class ServiceCollectionExtenstion
 
         services.AddSingleton<VRChatAuthService>();
         services.AddSingleton<UserProfileService>();
+
+        services.AddTransient<IConnectionStringProvider, ProfileConnectionStringProvider>();
+        services.AddDbContext<AppDbContext>();
+        services.AddTransient<DatabaseInitializeMigrateService>();
 
         services.AddTransient(serviceProvider =>
             serviceProvider.GetRequiredService<VRChatApiClientFactory>().GetClient());
