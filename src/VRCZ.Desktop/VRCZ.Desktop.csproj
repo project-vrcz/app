@@ -32,9 +32,16 @@
         <PackageReference Include="Serilog.Extensions.Hosting"/>
         <PackageReference Include="Serilog.Sinks.Console"/>
         <PackageReference Include="Serilog.Sinks.Debug"/>
+        <PackageReference Include="HotAvalonia" PrivateAssets="All" Publish="True" />
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" PrivateAssets="All" />
+        <PackageReference Include="MonoMod.RuntimeDetour" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\VRCZ.App\VRCZ.App.csproj"/>
     </ItemGroup>
+
+    <PropertyGroup>
+        <HotAvaloniaAutoEnable>false</HotAvaloniaAutoEnable>
+    </PropertyGroup>
 </Project>

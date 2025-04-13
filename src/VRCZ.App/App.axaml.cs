@@ -45,7 +45,6 @@ public class App : Application
     {
         ViewLocator.Register<HomeViewModel, HomePage>();
 
-        this.EnableHotReload();
         AvaloniaXamlLoader.Load(this);
     }
 
