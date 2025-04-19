@@ -1,0 +1,40 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:favorites="clr-namespace:VRCZ.App.ViewModels.Pages.Favorites"
+             xmlns:localFavorites="clr-namespace:VRCZ.Core.Models.Entities.LocalFavorites;assembly=VRCZ.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="favorites:MyAvatarPageViewModel"
+             x:Class="VRCZ.App.Pages.Favorites.MyAvatarPage">
+
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Loaded">
+            <InvokeCommandAction Command="{Binding LoadAvatarFavoritesCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
+
+    <TabControl>
+        <TabItem Header="Favorites">
+            <StackPanel>
+                <TextBlock Theme="{StaticResource TitleTextBlock}" Classes="H2" Text="Favorite Avatars"/>
+                <Button Content="Create Local" Command="{Binding OpenCreateLocalDialogCommand}" />
+                <TextBlock Theme="{StaticResource TitleTextBlock}" Classes="H2" Text="Local Favorite Avatars"/>
+                <ItemsControl ItemsSource="{Binding LocalAvatarFavoritesFolders}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="localFavorites:AvatarFavoritesFolder">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Id}" />
+                                <TextBlock Text="{Binding Name}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Uploaded">
+            <TextBlock Text="Hello World"></TextBlock>
+        </TabItem>
+    </TabControl>
+
+</UserControl>

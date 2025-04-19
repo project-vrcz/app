@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using VRCZ.Core.DbContexts;
 using VRCZ.Core.Services;
 using VRCZ.Core.Services.Database;
+using VRCZ.Core.Services.LocalFavorites;
 
 namespace VRCZ.Core.Extensions;
 
@@ -55,6 +56,8 @@ public static class ServiceCollectionExtenstion
         services.AddTransient<ManagedUserProfileService>();
 
         services.AddSingleton<VRChatTrackedEntitiesService>();
+
+        services.AddTransient<AvatarLocalFavoritesService>();
 
         return services;
     }

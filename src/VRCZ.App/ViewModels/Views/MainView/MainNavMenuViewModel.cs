@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using VRCZ.App.Pages.Favorites;
 using VRCZ.App.Services;
 using VRCZ.App.ViewModels.Pages;
+using VRCZ.App.ViewModels.Pages.Favorites;
 
 namespace VRCZ.App.ViewModels.Views.MainView;
 
@@ -24,9 +26,9 @@ public partial class MainNavMenuViewModel : ViewModelBase
                     isDefault: true),
                 new NavMenuItemViewModel("Tracking", isSeparator: true),
                 new NavMenuItemViewModel("Tracker", "SemiIconMapPin", Navigate, typeof(HomeViewModel)),
-                new NavMenuItemViewModel("Game Logger", "SemiIconAlignLeft", Navigate, typeof(HomeViewModel)),
-                new NavMenuItemViewModel("My Account", isSeparator: true),
-                new NavMenuItemViewModel("Avatars", "SemiIconUserCircle", Navigate, typeof(HomeViewModel)),
+                new NavMenuItemViewModel("Gameplay History", "SemiIconAlignLeft", Navigate, typeof(HomeViewModel)),
+                new NavMenuItemViewModel("My", isSeparator: true),
+                new NavMenuItemViewModel("Avatars", "SemiIconUserCircle", Navigate, typeof(MyAvatarPageViewModel)),
                 new NavMenuItemViewModel("Worlds", "SemiIconGlobe", Navigate, typeof(HomeViewModel)),
                 new NavMenuItemViewModel("Friends", "SemiIconUserGroup", Navigate, typeof(HomeViewModel)),
                 new NavMenuItemViewModel("Groups", "SemiIconApartment", Navigate, typeof(HomeViewModel))

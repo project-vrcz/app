@@ -2,12 +2,13 @@ using System.Net.Http.Headers;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using HotAvalonia;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using VRCZ.App.Pages;
+using VRCZ.App.Pages.Favorites;
 using VRCZ.App.ViewModels;
 using VRCZ.App.ViewModels.Pages;
+using VRCZ.App.ViewModels.Pages.Favorites;
 using VRCZ.Core.Services;
 
 namespace VRCZ.App;
@@ -44,6 +45,7 @@ public class App : Application
     public override void Initialize()
     {
         ViewLocator.Register<HomeViewModel, HomePage>();
+        ViewLocator.Register<MyAvatarPageViewModel, MyAvatarPage>();
 
         AvaloniaXamlLoader.Load(this);
     }

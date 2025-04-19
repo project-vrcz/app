@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:localFavorites="clr-namespace:VRCZ.App.ViewModels.Dialogs.LocalFavorites"
+             xmlns:u="https://irihi.tech/ursa"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="localFavorites:CreateAvatarLocalFavoritesFolderDialogViewModel"
+             x:Class="VRCZ.App.Dialogs.LocalFavorites.CreateAvatarLocalFavoritesFolderDialog">
+
+    <StackPanel Spacing="{DynamicResource SemiSpacingBase}" Width="448">
+        <u:Form HorizontalAlignment="Stretch">
+            <TextBox u:FormItem.Label="Name" u:FormItem.IsRequired="True" Text="{Binding Name}" />
+            <TextBox u:FormItem.Label="Description" Text="{Binding Description}"
+                     AcceptsReturn="True" Height="100" VerticalContentAlignment="Top" Padding="8"/>
+        </u:Form>
+        <Button Command="{Binding CreateCommand}" HorizontalAlignment="Right"
+                Content="Create" Theme="{DynamicResource SolidButton}" />
+    </StackPanel>
+</UserControl>

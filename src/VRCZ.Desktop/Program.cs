@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using HotAvalonia;
 using Lemon.Hosting.AvaloniauiDesktop;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,6 +67,7 @@ internal sealed class Program
     private static AppBuilder ConfigAvaloniaAppBuilder(AppBuilder appBuilder)
     {
         return appBuilder
+            .UseHotReload()
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();

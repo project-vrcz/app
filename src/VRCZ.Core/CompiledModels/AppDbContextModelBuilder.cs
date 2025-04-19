@@ -11,12 +11,26 @@ namespace VRCZ.Core.CompiledModels
     public partial class AppDbContextModel
     {
         private AppDbContextModel()
-            : base(skipDetectChanges: true, modelId: new Guid("bfcbe5fe-2161-4cc4-971f-055e53cd427d"), entityTypeCount: 0)
+            : base(skipDetectChanges: false, modelId: new Guid("3f98e732-309b-4e1d-be99-d8e7a74a4f4f"), entityTypeCount: 3)
         {
         }
 
         partial void Initialize()
         {
+            var avatarAvatarFavoritesFolder = AvatarAvatarFavoritesFolderEntityType.Create(this);
+            var avatarFavoritesFolder = AvatarFavoritesFolderEntityType.Create(this);
+            var avatar = AvatarEntityType.Create(this);
+
+            AvatarAvatarFavoritesFolderEntityType.CreateForeignKey1(avatarAvatarFavoritesFolder, avatarFavoritesFolder);
+            AvatarAvatarFavoritesFolderEntityType.CreateForeignKey2(avatarAvatarFavoritesFolder, avatar);
+
+            AvatarFavoritesFolderEntityType.CreateSkipNavigation1(avatarFavoritesFolder, avatar, avatarAvatarFavoritesFolder);
+            AvatarEntityType.CreateSkipNavigation1(avatar, avatarFavoritesFolder, avatarAvatarFavoritesFolder);
+
+            AvatarAvatarFavoritesFolderEntityType.CreateAnnotations(avatarAvatarFavoritesFolder);
+            AvatarFavoritesFolderEntityType.CreateAnnotations(avatarFavoritesFolder);
+            AvatarEntityType.CreateAnnotations(avatar);
+
             AddAnnotation("ProductVersion", "9.0.4");
         }
     }

@@ -6,6 +6,7 @@ public static class ProfileStorageUtils
 
     public const string UserProfileMetaDataFileName = "profile.json";
     public const string UserProfileSecretFileName = "secret.json";
+    public const string UserProfileDatabaseFileName = "profile.db";
 
     public static string GetProfileStorageRootPath()
     {
