@@ -1,0 +1,24 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:browser="clr-namespace:VRCZ.App.ViewModels.Pages.Browser"
+             xmlns:controls="clr-namespace:VRCZ.App.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="browser:AvatarPageViewModel"
+             x:Class="VRCZ.App.Pages.Browser.AvatarPage">
+
+    <StackPanel>
+        <Border>
+            <Grid ColumnDefinitions="Auto,*">
+                <Image controls:AsyncImageLoader.Source="{Binding AvatarViewModel.Avatar.ImageUrl}"
+                       Width="300" />
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding AvatarViewModel.Avatar.Name}" />
+                    <TextBlock Text="{Binding AvatarViewModel.Avatar.AuthorName, StringFormat='{}Created By {0}'}"/>
+                    <Button Content="Add To Favorites"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </StackPanel>
+</UserControl>

@@ -2,6 +2,7 @@
 using VRCZ.App.Pages.Favorites;
 using VRCZ.App.Services;
 using VRCZ.App.ViewModels.Pages;
+using VRCZ.App.ViewModels.Pages.Browser;
 using VRCZ.App.ViewModels.Pages.Favorites;
 
 namespace VRCZ.App.ViewModels.Views.MainView;
@@ -35,7 +36,7 @@ public partial class MainNavMenuViewModel : ViewModelBase
             ], true),
             new TopNavMenuItemViewModel("Browser", "SemiIconHelm", SetMenuItems, [
                 new NavMenuItemViewModel("Worlds", "SemiIconGlobe", Navigate, typeof(HomeViewModel), isDefault: true),
-                new NavMenuItemViewModel("Avatars", "SemiIconUserCircle", Navigate, typeof(HomeViewModel)),
+                new NavMenuItemViewModel("Avatars", "SemiIconUserCircle", Navigate, typeof(AvatarBrowserIndexPageViewModel)),
                 new NavMenuItemViewModel("Groups", "SemiIconApartment", Navigate, typeof(HomeViewModel)),
             ]),
             new TopNavMenuItemViewModel("Tools", "SemiIconWrench", SetMenuItems, [])

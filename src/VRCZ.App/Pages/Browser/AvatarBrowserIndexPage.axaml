@@ -1,0 +1,47 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:browser="clr-namespace:VRCZ.App.ViewModels.Pages.Browser"
+             xmlns:entities="clr-namespace:VRCZ.App.ViewModels.Entities"
+             xmlns:controls="clr-namespace:VRCZ.App.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="browser:AvatarBrowserIndexPageViewModel"
+             x:Class="VRCZ.App.Pages.Browser.AvatarBrowserIndexPage">
+
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Loaded">
+            <InvokeCommandAction Command="{Binding LoadAvatarsCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
+
+    <ScrollViewer>
+        <ItemsControl ItemsSource="{Binding Avatars}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.DataTemplates>
+                <DataTemplate x:DataType="entities:AvatarViewModel">
+                    <Border Theme="{StaticResource CardBorder}" Padding="0" Width="200" ClipToBounds="True">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="PointerPressed">
+                                <InvokeCommandAction Command="{Binding ViewCommand}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                        <StackPanel>
+                            <Image controls:AsyncImageLoader.Source="{Binding Avatar.ThumbnailImageUrl}"
+                                   Height="100" Stretch="UniformToFill" />
+                            <StackPanel Margin="{DynamicResource ThicknessCardPadding}">
+                                <TextBlock Text="{Binding Avatar.Name}" Classes="H6"
+                                           Theme="{StaticResource TitleTextBlock}" />
+                                <TextBlock Text="{Binding Avatar.AuthorName}" Classes="Secondary" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.DataTemplates>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>
