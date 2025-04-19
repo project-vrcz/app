@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/PackageManagement/">
+    <File Path="Directory.Packages.props" />
+    <File Path="nuget.config" />
+  </Folder>
+  <Project Path="VRCZ.App/VRCZ.App.csproj" />
+  <Project Path="VRCZ.Core/VRCZ.Core.csproj" />
+  <Project Path="VRCZ.Desktop/VRCZ.Desktop.csproj" />
+  <Project Path="VRCZ.VRChatApi.Generated/VRCZ.VRChatApi.Generated.csproj" />
+</Solution>
