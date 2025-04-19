@@ -14,12 +14,12 @@ using VRCZ.Core.Models.Entities.VRChat;
 namespace VRCZ.Core.CompiledModels
 {
     [EntityFrameworkInternal]
-    public partial class AvatarEntityType
+    public partial class AvatarEntityEntityType
     {
         public static RuntimeEntityType Create(RuntimeModel model, RuntimeEntityType baseEntityType = null)
         {
             var runtimeEntityType = model.AddEntityType(
-                "VRCZ.Core.Models.Entities.VRChat.Avatar",
+                "VRCZ.Core.Models.Entities.VRChat.AvatarEntity",
                 typeof(AvatarEntity),
                 baseEntityType,
                 propertyCount: 13,

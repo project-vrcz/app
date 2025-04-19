@@ -4,35 +4,39 @@ using CommunityToolkit.Mvvm.Input;
 using Ursa.Controls;
 using VRCZ.App.Dialogs.LocalFavorites;
 using VRCZ.App.ViewModels.Dialogs.LocalFavorites;
-using VRCZ.Core.Models.Entities.LocalFavorites;
+using VRCZ.App.ViewModels.Entities.LocalFavorites;
 using VRCZ.Core.Services.LocalFavorites;
 
-namespace VRCZ.App.ViewModels.Pages.Favorites;
+namespace VRCZ.App.ViewModels.Pages.My;
 
-public partial class MyAvatarPageViewModel(AvatarLocalFavoritesService localFavoritesService) : PageViewModelBase
+public partial class MyAvatarPageViewModel(
+    AvatarLocalFavoritesService localFavoritesService,
+    AvatarFavoritesFolderViewModelFactory viewModelFactory) : PageViewModelBase
 {
-    [ObservableProperty] private ObservableCollection<AvatarFavoritesFolder> _localAvatarFavoritesFolders = [];
+    [ObservableProperty] private ObservableCollection<AvatarLocalFavoritesFolderViewModel> _localAvatarFavoritesFolders = [];
 
     [RelayCommand]
     private async Task LoadAvatarFavoritesAsync()
     {
         var folders = await localFavoritesService.GetAvatarFavoritesFoldersAsync();
-        LocalAvatarFavoritesFolders = new ObservableCollection<AvatarFavoritesFolder>(folders);
+        LocalAvatarFavoritesFolders =
+            new ObservableCollection<AvatarLocalFavoritesFolderViewModel>(folders.Select(viewModelFactory.Create));
     }
 
     [RelayCommand]
     private void OpenCreateLocalDialog()
     {
-        OverlayDialog.ShowModal<CreateAvatarLocalFavoritesFolderDialog, CreateAvatarLocalFavoritesFolderDialogViewModel>(
-            new CreateAvatarLocalFavoritesFolderDialogViewModel(localFavoritesService),
-            options: new OverlayDialogOptions
-            {
-                Title = "Create Local Avatar Favorites Folder",
-                CanDragMove = false,
-                CanResize = false,
-                IsCloseButtonVisible = true,
-                Buttons = DialogButton.None
-            }
-        );
+        OverlayDialog
+            .ShowModal<CreateAvatarLocalFavoritesFolderDialog, CreateAvatarLocalFavoritesFolderDialogViewModel>(
+                new CreateAvatarLocalFavoritesFolderDialogViewModel(localFavoritesService),
+                options: new OverlayDialogOptions
+                {
+                    Title = "Create Local Avatar Favorites Folder",
+                    CanDragMove = false,
+                    CanResize = false,
+                    IsCloseButtonVisible = true,
+                    Buttons = DialogButton.None
+                }
+            );
     }
 }

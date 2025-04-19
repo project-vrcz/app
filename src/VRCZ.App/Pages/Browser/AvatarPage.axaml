@@ -16,7 +16,7 @@
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="{Binding AvatarViewModel.Avatar.Name}" />
                     <TextBlock Text="{Binding AvatarViewModel.Avatar.AuthorName, StringFormat='{}Created By {0}'}"/>
-                    <Button Content="Add To Favorites"/>
+                    <Button Content="Add To Favorites" Command="{Binding AvatarViewModel.OpenAddFavoritesDialogCommand}"/>
                 </StackPanel>
             </Grid>
         </Border>

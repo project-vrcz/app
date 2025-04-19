@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using VRCZ.App.Pages.Favorites;
 using VRCZ.App.Services;
 using VRCZ.App.ViewModels.Pages;
 using VRCZ.App.ViewModels.Pages.Browser;
-using VRCZ.App.ViewModels.Pages.Favorites;
+using VRCZ.App.ViewModels.Pages.My;
 
 namespace VRCZ.App.ViewModels.Views.MainView;
 

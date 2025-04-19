@@ -14,7 +14,7 @@ public class AppDbContext(
     DbContextOptions<AppDbContext> options,
     IConnectionStringProvider connectionStringProvider) : DbContext(options)
 {
-    public DbSet<Avatar> Avatars { get; set; }
+    public DbSet<AvatarEntity> Avatars { get; set; }
 
     public DbSet<AvatarFavoritesFolder> AvatarFavoritesFolders { get; set; }
 
@@ -87,7 +87,7 @@ public class AppDbContext(
             }
         }
 
-        builder.Entity<Avatar>()
+        builder.Entity<AvatarEntity>()
             .ToTable("Avatars");
 
         builder.Entity<AvatarFavoritesFolder>()

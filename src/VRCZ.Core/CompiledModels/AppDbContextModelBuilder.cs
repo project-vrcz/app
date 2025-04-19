@@ -11,25 +11,25 @@ namespace VRCZ.Core.CompiledModels
     public partial class AppDbContextModel
     {
         private AppDbContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("3f98e732-309b-4e1d-be99-d8e7a74a4f4f"), entityTypeCount: 3)
+            : base(skipDetectChanges: false, modelId: new Guid("0c91e245-c23c-46e8-b43d-b58609739cd8"), entityTypeCount: 3)
         {
         }
 
         partial void Initialize()
         {
-            var avatarAvatarFavoritesFolder = AvatarAvatarFavoritesFolderEntityType.Create(this);
+            var avatarEntityAvatarFavoritesFolder = AvatarEntityAvatarFavoritesFolderEntityType.Create(this);
             var avatarFavoritesFolder = AvatarFavoritesFolderEntityType.Create(this);
-            var avatar = AvatarEntityType.Create(this);
+            var avatarEntity = AvatarEntityEntityType.Create(this);
 
-            AvatarAvatarFavoritesFolderEntityType.CreateForeignKey1(avatarAvatarFavoritesFolder, avatarFavoritesFolder);
-            AvatarAvatarFavoritesFolderEntityType.CreateForeignKey2(avatarAvatarFavoritesFolder, avatar);
+            AvatarEntityAvatarFavoritesFolderEntityType.CreateForeignKey1(avatarEntityAvatarFavoritesFolder, avatarFavoritesFolder);
+            AvatarEntityAvatarFavoritesFolderEntityType.CreateForeignKey2(avatarEntityAvatarFavoritesFolder, avatarEntity);
 
-            AvatarFavoritesFolderEntityType.CreateSkipNavigation1(avatarFavoritesFolder, avatar, avatarAvatarFavoritesFolder);
-            AvatarEntityType.CreateSkipNavigation1(avatar, avatarFavoritesFolder, avatarAvatarFavoritesFolder);
+            AvatarFavoritesFolderEntityType.CreateSkipNavigation1(avatarFavoritesFolder, avatarEntity, avatarEntityAvatarFavoritesFolder);
+            AvatarEntityEntityType.CreateSkipNavigation1(avatarEntity, avatarFavoritesFolder, avatarEntityAvatarFavoritesFolder);
 
-            AvatarAvatarFavoritesFolderEntityType.CreateAnnotations(avatarAvatarFavoritesFolder);
+            AvatarEntityAvatarFavoritesFolderEntityType.CreateAnnotations(avatarEntityAvatarFavoritesFolder);
             AvatarFavoritesFolderEntityType.CreateAnnotations(avatarFavoritesFolder);
-            AvatarEntityType.CreateAnnotations(avatar);
+            AvatarEntityEntityType.CreateAnnotations(avatarEntity);
 
             AddAnnotation("ProductVersion", "9.0.4");
         }

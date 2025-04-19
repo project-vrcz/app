@@ -2,24 +2,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:browser="clr-namespace:VRCZ.App.ViewModels.Pages.Browser"
+             xmlns:localFavorites="clr-namespace:VRCZ.App.ViewModels.Pages.My.LocalFavorites"
              xmlns:entities="clr-namespace:VRCZ.App.ViewModels.Entities"
              xmlns:controls="clr-namespace:VRCZ.App.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="browser:AvatarBrowserIndexPageViewModel"
-             x:Class="VRCZ.App.Pages.Browser.AvatarBrowserIndexPage">
+             x:DataType="localFavorites:AvatarLocalFavoritesFolderPageViewModel"
+             x:Class="VRCZ.App.Pages.My.LocalFavorites.AvatarLocalFavoritesFolderPage">
 
     <Interaction.Behaviors>
         <EventTriggerBehavior EventName="Loaded">
-            <InvokeCommandAction Command="{Binding LoadAvatarsCommand}" />
+            <InvokeCommandAction Command="{Binding LoadCommand}" />
         </EventTriggerBehavior>
     </Interaction.Behaviors>
 
-    <ScrollViewer>
+    <StackPanel>
+        <Border>
+            <StackPanel>
+                <TextBlock Text="{Binding Folder.Name}" />
+                <TextBlock Text="{Binding Folder.Description}" />
+                <TextBlock Text="{Binding Folder.Id}" />
+            </StackPanel>
+        </Border>
         <ItemsControl ItemsSource="{Binding Avatars}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel />
+                    <WrapPanel/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.DataTemplates>
@@ -43,5 +50,5 @@
                 </DataTemplate>
             </ItemsControl.DataTemplates>
         </ItemsControl>
-    </ScrollViewer>
+    </StackPanel>
 </UserControl>

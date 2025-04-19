@@ -2,7 +2,7 @@
 
 namespace VRCZ.Core.Models.Entities.VRChat;
 
-public class Avatar : BaseEntityWithoutId
+public class AvatarEntity : BaseEntityWithoutId
 {
     [Key]
     public required string Id { get; set; }

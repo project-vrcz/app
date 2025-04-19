@@ -7,10 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using VRCZ.App.Pages;
 using VRCZ.App.Pages.Browser;
 using VRCZ.App.Pages.Favorites;
+using VRCZ.App.Pages.My.LocalFavorites;
 using VRCZ.App.ViewModels;
 using VRCZ.App.ViewModels.Pages;
 using VRCZ.App.ViewModels.Pages.Browser;
-using VRCZ.App.ViewModels.Pages.Favorites;
+using VRCZ.App.ViewModels.Pages.My;
+using VRCZ.App.ViewModels.Pages.My.LocalFavorites;
 using VRCZ.Core.Services;
 
 namespace VRCZ.App;
@@ -50,6 +52,7 @@ public class App : Application
         ViewLocator.Register<MyAvatarPageViewModel, MyAvatarPage>();
         ViewLocator.Register<AvatarBrowserIndexPageViewModel, AvatarBrowserIndexPage>();
         ViewLocator.Register<AvatarPageViewModel, AvatarPage>();
+        ViewLocator.Register<AvatarLocalFavoritesFolderPageViewModel, AvatarLocalFavoritesFolderPage>();
 
         AvaloniaXamlLoader.Load(this);
     }

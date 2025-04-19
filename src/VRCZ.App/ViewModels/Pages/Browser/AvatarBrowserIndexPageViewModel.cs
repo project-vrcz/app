@@ -15,7 +15,11 @@ public partial class AvatarBrowserIndexPageViewModel(
     [RelayCommand]
     private async Task LoadAvatarsAsync()
     {
-        var avatars = await apiClient.Avatars.GetAsync(config => { config.QueryParameters.Featured = true; });
+        var avatars = await apiClient.Avatars.GetAsync(config =>
+        {
+            config.QueryParameters.Featured = true;
+            config.QueryParameters.N = 50;
+        });
 
         if (avatars is null)
             return;

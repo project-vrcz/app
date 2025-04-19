@@ -1,0 +1,32 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:localFavorites="clr-namespace:VRCZ.App.ViewModels.Dialogs.LocalFavorites"
+             xmlns:localFavoritesEntities="clr-namespace:VRCZ.Core.Models.Entities.LocalFavorites;assembly=VRCZ.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="localFavorites:AddAvatarToFavoritesDialogViewModel"
+             x:Class="VRCZ.App.Dialogs.LocalFavorites.AddAvatarToFavoritesDialog">
+
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Loaded">
+            <InvokeCommandAction Command="{Binding LoadCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
+
+    <ItemsControl ItemsSource="{Binding LocalFolders}">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="localFavoritesEntities:AvatarFavoritesFolder">
+                <Button
+                    Theme="{DynamicResource BorderlessButton}"
+                    Command="{Binding $parent[ItemsControl].((localFavorites:AddAvatarToFavoritesDialogViewModel)DataContext).AddToFavoritesCommand}"
+                    CommandParameter="{Binding}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Id}" />
+                        <TextBlock Text="{Binding Name}" />
+                    </StackPanel>
+                </Button>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

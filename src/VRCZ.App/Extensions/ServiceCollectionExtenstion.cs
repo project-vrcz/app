@@ -3,11 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using VRCZ.App.Services;
 using VRCZ.App.ViewModels;
 using VRCZ.App.ViewModels.Dialogs;
+using VRCZ.App.ViewModels.Dialogs.LocalFavorites;
 using VRCZ.App.ViewModels.Entities;
+using VRCZ.App.ViewModels.Entities.LocalFavorites;
 using VRCZ.App.ViewModels.FriendsPanel;
 using VRCZ.App.ViewModels.Pages;
 using VRCZ.App.ViewModels.Pages.Browser;
-using VRCZ.App.ViewModels.Pages.Favorites;
+using VRCZ.App.ViewModels.Pages.My;
+using VRCZ.App.ViewModels.Pages.My.LocalFavorites;
 using VRCZ.App.ViewModels.Views;
 using VRCZ.App.ViewModels.Views.MainView;
 
@@ -30,10 +33,16 @@ public static class ServiceCollectionExtenstion
 
         serviceCollection.AddTransient<MainNavMenuViewModel>();
         serviceCollection.AddTransient<HomeViewModel>();
+
         serviceCollection.AddTransient<MyAvatarPageViewModel>();
         serviceCollection.AddTransient<AvatarBrowserIndexPageViewModel>();
 
+        serviceCollection.AddTransient<AvatarLocalFavoritesFolderPageViewModelFactory>();
+
         serviceCollection.AddTransient<AvatarViewModelFactory>();
+        serviceCollection.AddTransient<AvatarFavoritesFolderViewModelFactory>();
+
+        serviceCollection.AddTransient<AddAvatarToFavoritesDialogViewModelFactory>();
 
         serviceCollection.AddSingleton<WeakReferenceMessenger>();
 

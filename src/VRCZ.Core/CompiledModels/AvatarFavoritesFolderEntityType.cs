@@ -79,7 +79,7 @@ namespace VRCZ.Core.CompiledModels
                     declaringEntityType),
                 true,
                 false,
-                typeof(List<Avatar>),
+                typeof(List<AvatarEntity>),
                 propertyInfo: typeof(AvatarFavoritesFolder).GetProperty("Avatars", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(AvatarFavoritesFolder).GetField("<Avatars>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
