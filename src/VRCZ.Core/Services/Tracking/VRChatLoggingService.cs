@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using VRCZ.Core.Models.VRChat.Logging;
 using VRCZ.Core.Utils;
 
-namespace VRCZ.Core.Services;
+namespace VRCZ.Core.Services.Tracking;
 
 public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsyncDisposable, IDisposable
 {

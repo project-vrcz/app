@@ -1,4 +1,5 @@
 ﻿using VRCZ.Core.Exceptions;
+using VRCZ.Core.Services.Tracking;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.Core.Services;

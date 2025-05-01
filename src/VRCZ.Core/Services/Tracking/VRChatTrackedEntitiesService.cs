@@ -8,7 +8,7 @@ using VRCZ.Core.Models.VRChat.WebSocket;
 using VRCZ.VRChatApi.Generated;
 using VRCZ.VRChatApi.Generated.Models;
 
-namespace VRCZ.Core.Services;
+namespace VRCZ.Core.Services.Tracking;
 
 public class VRChatTrackedEntitiesService(VRChatApiClient vrchatApiClient)
 {

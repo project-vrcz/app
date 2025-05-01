@@ -4,6 +4,7 @@ using VRCZ.Core.DbContexts;
 using VRCZ.Core.Services;
 using VRCZ.Core.Services.Database;
 using VRCZ.Core.Services.LocalFavorites;
+using VRCZ.Core.Services.Tracking;
 
 namespace VRCZ.Core.Extensions;
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using VRCZ.Core.Services.Tracking;
 
 namespace VRCZ.Core.Services;
 
