@@ -1,0 +1,50 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tracking="clr-namespace:VRCZ.App.ViewModels.Pages.Tracking"
+             xmlns:u="https://irihi.tech/ursa"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="tracking:GameLoggingPageViewModel"
+             x:Class="VRCZ.App.Pages.Tracking.GameLoggingPage">
+
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Loaded">
+            <InvokeCommandAction Command="{Binding LoadCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
+
+    <Grid ColumnDefinitions="*,Auto">
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding LogEntities}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="Auto,Auto,*">
+                            <u:Badge Classes="Light Tertiary" Header="{Binding Timestamp}" />
+                            <u:Badge Grid.Column="1" Header="{Binding LogLevel}" />
+                            <TextBlock Grid.Column="2" Text="{Binding Message}" MaxLines="1">
+                                <ToolTip.Tip>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Message}" />
+                                    </StackPanel>
+                                </ToolTip.Tip>
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <ListBox Grid.Column="1" ItemsSource="{Binding LogPaths}" Width="200">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

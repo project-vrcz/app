@@ -59,6 +59,8 @@ public static class ServiceCollectionExtenstion
 
         services.AddTransient<AvatarLocalFavoritesService>();
 
+        services.AddTransient<VRChatLoggingService>();
+
         return services;
     }
 }

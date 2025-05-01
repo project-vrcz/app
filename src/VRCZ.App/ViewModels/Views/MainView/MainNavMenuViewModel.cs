@@ -3,6 +3,7 @@ using VRCZ.App.Services;
 using VRCZ.App.ViewModels.Pages;
 using VRCZ.App.ViewModels.Pages.Browser;
 using VRCZ.App.ViewModels.Pages.My;
+using VRCZ.App.ViewModels.Pages.Tracking;
 
 namespace VRCZ.App.ViewModels.Views.MainView;
 
@@ -25,8 +26,9 @@ public partial class MainNavMenuViewModel : ViewModelBase
                 new NavMenuItemViewModel("Dashboard", "SemiIconCommand", Navigate, typeof(HomeViewModel),
                     isDefault: true),
                 new NavMenuItemViewModel("Tracking", isSeparator: true),
-                new NavMenuItemViewModel("Tracker", "SemiIconMapPin", Navigate, typeof(HomeViewModel)),
+                new NavMenuItemViewModel("Event Recorder", "SemiIconMapPin", Navigate, typeof(HomeViewModel)),
                 new NavMenuItemViewModel("Gameplay History", "SemiIconAlignLeft", Navigate, typeof(HomeViewModel)),
+                new NavMenuItemViewModel("Game Logging", "SemiIconFile", Navigate, typeof(GameLoggingPageViewModel)),
                 new NavMenuItemViewModel("My", isSeparator: true),
                 new NavMenuItemViewModel("Avatars", "SemiIconUserCircle", Navigate, typeof(MyAvatarPageViewModel)),
                 new NavMenuItemViewModel("Worlds", "SemiIconGlobe", Navigate, typeof(HomeViewModel)),

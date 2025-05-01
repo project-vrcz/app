@@ -11,6 +11,7 @@ using VRCZ.App.ViewModels.Pages;
 using VRCZ.App.ViewModels.Pages.Browser;
 using VRCZ.App.ViewModels.Pages.My;
 using VRCZ.App.ViewModels.Pages.My.LocalFavorites;
+using VRCZ.App.ViewModels.Pages.Tracking;
 using VRCZ.App.ViewModels.Views;
 using VRCZ.App.ViewModels.Views.MainView;
 
@@ -36,6 +37,8 @@ public static class ServiceCollectionExtenstion
 
         serviceCollection.AddTransient<MyAvatarPageViewModel>();
         serviceCollection.AddTransient<AvatarBrowserIndexPageViewModel>();
+
+        serviceCollection.AddTransient<GameLoggingPageViewModel>();
 
         serviceCollection.AddTransient<AvatarLocalFavoritesFolderPageViewModelFactory>();
 
