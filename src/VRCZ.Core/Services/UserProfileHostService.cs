@@ -5,7 +5,8 @@ namespace VRCZ.Core.Services;
 
 public class UserProfileHostService(
     UserProfileService userProfileService,
-    VRChatPipelineService vrchatPipelineService)
+    VRChatPipelineService vrchatPipelineService,
+    VRChatLoggingService vrchatLoggingService)
     : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
@@ -17,7 +18,9 @@ public class UserProfileHostService(
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         await userProfileService.SaveProfileAsync();
+
         await vrchatPipelineService.DisconnectAsync();
+        await vrchatLoggingService.StopAsync();
     }
 
     private async void OnProfileChanged(object? sender, EventArgs e)
@@ -27,6 +30,7 @@ public class UserProfileHostService(
             if (!userProfileService.IsProfileLoaded)
             {
                 await vrchatPipelineService.DisconnectAsync();
+                await vrchatLoggingService.StopAsync();
             }
         }
         catch

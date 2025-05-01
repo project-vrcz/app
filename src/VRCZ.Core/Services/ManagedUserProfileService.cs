@@ -7,7 +7,8 @@ public class ManagedUserProfileService(
     VRChatPipelineService vrchatPipelineService,
     VRChatAuthService vrchatAuthService,
     UserProfileService userProfileService,
-    VRChatTrackedEntitiesService vrchatTrackedEntitiesService)
+    VRChatTrackedEntitiesService vrchatTrackedEntitiesService,
+    VRChatLoggingService vrchatLoggingService)
 {
     public async Task LoadProfileAsync(string userId,
         Func<TwoFactorRequired_requiresTwoFactorAuth[], Task>? handleTwoFactorRequired = null)
@@ -34,6 +35,7 @@ public class ManagedUserProfileService(
             await vrchatTrackedEntitiesService.GetFriendsAsync();
 
             await vrchatPipelineService.ConnectAsync();
+            await vrchatLoggingService.StartAsync();
         }
         catch
         {

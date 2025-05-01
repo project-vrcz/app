@@ -18,9 +18,9 @@ public partial class GameLoggingPageViewModel(VRChatLoggingService gameLoggingSe
     {
         LogPaths = new ObservableCollection<string>(gameLoggingService.GetVRChatLogPaths());
 
-        _ = gameLoggingService.ParseLogLoop(LogPaths.Last(), [], logEntity =>
+        _ = gameLoggingService.ParseLogLoop(LogPaths.Last(), async logEntity =>
             {
-                Dispatcher.UIThread.Invoke(() =>
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     LogEntities.Add(logEntity);
                 });
