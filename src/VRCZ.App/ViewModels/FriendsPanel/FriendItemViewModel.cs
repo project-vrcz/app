@@ -1,11 +1,9 @@
-﻿using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using VRCZ.App.Services;
 using VRCZ.App.ViewMessages.TrackedEntities;
 using VRCZ.Core.Models;
-using VRCZ.Core.Services;
+using VRCZ.Core.Services.Tracking;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.App.ViewModels.FriendsPanel;

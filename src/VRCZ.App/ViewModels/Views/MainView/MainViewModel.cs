@@ -5,7 +5,7 @@ using VRCZ.App.Services;
 using VRCZ.App.ViewMessages.TrackedEntities;
 using VRCZ.App.ViewModels.FriendsPanel;
 using VRCZ.App.ViewModels.Pages;
-using VRCZ.Core.Services;
+using VRCZ.Core.Services.Tracking;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.App.ViewModels.Views.MainView;

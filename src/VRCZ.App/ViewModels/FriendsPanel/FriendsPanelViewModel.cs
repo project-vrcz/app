@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging;
-using VRCZ.App.Services;
 using VRCZ.App.ViewMessages.TrackedEntities;
-using VRCZ.Core.Services;
+using VRCZ.Core.Services.Tracking;
 
 namespace VRCZ.App.ViewModels.FriendsPanel;
 

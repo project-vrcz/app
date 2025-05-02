@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Hosting;
 using VRCZ.App.ViewMessages.TrackedEntities;
-using VRCZ.Core.Services;
+using VRCZ.Core.Services.Tracking;
 
 namespace VRCZ.App.Services;
 
