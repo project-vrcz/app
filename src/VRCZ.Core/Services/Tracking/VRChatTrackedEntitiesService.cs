@@ -74,7 +74,7 @@ public class VRChatTrackedEntitiesService(
     {
         try
         {
-            while (!_cancellationTokenSource?.IsCancellationRequested ?? false)
+            while (_cancellationTokenSource is { IsCancellationRequested: false })
             {
                 var message = await _messageChannel.Reader.ReadAsync(_cancellationTokenSource.Token);
 
