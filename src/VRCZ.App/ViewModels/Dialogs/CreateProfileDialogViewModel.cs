@@ -14,12 +14,14 @@ namespace VRCZ.App.ViewModels.Dialogs;
 
 public partial class CreateProfileDialogViewModel : ViewModelBase
 {
-    [ObservableProperty] private UserControl _currentView;
+    [ObservableProperty] public partial UserControl CurrentView { get; private set; }
 
-    [ObservableProperty] private string _username = "";
-    [ObservableProperty] private string _password = "";
+    [ObservableProperty] public partial string Username { get; set; } = "";
 
-    [ObservableProperty] private TwoFactorRequired_requiresTwoFactorAuth[] _available2FAMethods = [];
+    [ObservableProperty] public partial string Password { get; set; } = "";
+
+    [ObservableProperty]
+    public partial TwoFactorRequired_requiresTwoFactorAuth[] Available2FAMethods { get; private set; } = [];
 
     private readonly VRChatAuthService _vrchatAuthService;
     private readonly VRChatApiClient _vrchatApiClient;

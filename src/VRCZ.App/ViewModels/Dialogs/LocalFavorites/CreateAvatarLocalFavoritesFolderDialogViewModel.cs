@@ -12,11 +12,10 @@ public partial class CreateAvatarLocalFavoritesFolderDialogViewModel(AvatarLocal
     [MinLength(1)]
     [Required]
     [ObservableProperty]
-    private string _name = "";
+    public partial string Name { get; set; } = "";
 
     [ObservableProperty]
-    private string _description = "";
-
+    public partial string Description { get; set; } = "";
 
     [RelayCommand]
     private async Task Create()

@@ -9,22 +9,17 @@ namespace VRCZ.App.ViewModels.Pages.Tracking;
 
 public partial class GameLoggingPageViewModel(VRChatLoggingService gameLoggingService) : PageViewModelBase
 {
-    [ObservableProperty] private ObservableCollection<string> _logPaths = [];
+    [ObservableProperty] public partial ObservableCollection<string> LogPaths { get; private set; } = [];
 
-    [ObservableProperty] private ObservableCollection<VRChatLogEntity> _logEntities = [];
+    [ObservableProperty] public partial ObservableCollection<VRChatLogEntity> LogEntities { get; private set; } = [];
 
     [RelayCommand]
     private void Load()
     {
         LogPaths = new ObservableCollection<string>(gameLoggingService.GetVRChatLogPaths());
 
-        _ = gameLoggingService.ParseLogLoop(LogPaths.Last(), async logEntity =>
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    LogEntities.Add(logEntity);
-                });
-            },
+        _ = gameLoggingService.ParseLogLoop(LogPaths.Last(),
+            async logEntity => { await Dispatcher.UIThread.InvokeAsync(() => { LogEntities.Add(logEntity); }); },
             CancellationToken.None);
     }
 }

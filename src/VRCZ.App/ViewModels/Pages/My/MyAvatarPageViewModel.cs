@@ -13,7 +13,12 @@ public partial class MyAvatarPageViewModel(
     AvatarLocalFavoritesService localFavoritesService,
     AvatarFavoritesFolderViewModelFactory viewModelFactory) : PageViewModelBase
 {
-    [ObservableProperty] private ObservableCollection<AvatarLocalFavoritesFolderViewModel> _localAvatarFavoritesFolders = [];
+    [ObservableProperty]
+    public partial ObservableCollection<AvatarLocalFavoritesFolderViewModel> LocalAvatarFavoritesFolders
+    {
+        get;
+        private set;
+    } = [];
 
     [RelayCommand]
     private async Task LoadAvatarFavoritesAsync()

@@ -11,7 +11,8 @@ namespace VRCZ.App.ViewModels.Dialogs.LocalFavorites;
 public partial class AddAvatarToFavoritesDialogViewModel(Avatar avatar, AvatarLocalFavoritesService avatarLocalFavoritesService)
     : ViewModelBase
 {
-    [ObservableProperty] private ObservableCollection<AvatarFavoritesFolder> _localFolders = [];
+    [ObservableProperty]
+    public partial ObservableCollection<AvatarFavoritesFolder> LocalFolders { get; private set; } = [];
 
     [RelayCommand]
     private async Task Load()

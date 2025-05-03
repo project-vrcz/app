@@ -15,7 +15,8 @@ public partial class AvatarViewModel(
     NavigationService navigationService,
     AddAvatarToFavoritesDialogViewModelFactory addToFavoritesFactory) : ViewModelBase
 {
-    [ObservableProperty] private Avatar _avatar = avatar;
+    [ObservableProperty]
+    public partial Avatar Avatar { get; private set; } = avatar;
 
     [RelayCommand]
     private void View()

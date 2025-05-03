@@ -10,7 +10,7 @@ public partial class AvatarBrowserIndexPageViewModel(
     VRChatApiClient apiClient,
     AvatarViewModelFactory avatarViewModelFactory) : PageViewModelBase
 {
-    [ObservableProperty] private ObservableCollection<AvatarViewModel> _avatars = [];
+    [ObservableProperty] public partial ObservableCollection<AvatarViewModel> Avatars { get; private set; } = [];
 
     [RelayCommand]
     private async Task LoadAvatarsAsync()

@@ -10,29 +10,35 @@ namespace VRCZ.App.ViewModels.FriendsPanel;
 
 public partial class FriendItemViewModel : ViewModelBase
 {
-    [ObservableProperty] private LimitedUser _user;
-    [ObservableProperty] private UserLocation? _location;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UserAvatarUrl))]
+    public partial LimitedUser User { get; private set; }
+
+    [ObservableProperty]
+    public partial UserLocation? Location { get; private set; }
 
     public string? UserAvatarUrl =>
         !string.IsNullOrEmpty(User.UserIcon) ? User.UserIcon :
         !string.IsNullOrEmpty(User.CurrentAvatarThumbnailImageUrl) ? User.CurrentAvatarThumbnailImageUrl :
         null;
 
-    [ObservableProperty] private Instance? _instance;
-    [ObservableProperty] private World? _world;
+    [ObservableProperty]
+    public partial Instance? Instance { get; private set; }
+
+    [ObservableProperty]
+    public partial World? World { get; private set; }
 
     private readonly VRChatTrackedEntitiesService _trackedEntitiesService;
 
     public FriendItemViewModel(WeakReferenceMessenger weakReferenceMessenger, LimitedUser limitedUser,
         VRChatTrackedEntitiesService trackedEntitiesService)
     {
-        _user = limitedUser;
+        User = limitedUser;
         _trackedEntitiesService = trackedEntitiesService;
 
         if (limitedUser.Id is not { } userId)
             throw new ArgumentException("User ID is required", nameof(limitedUser));
-
-        _location = trackedEntitiesService.GetUserLocation(userId) ??
+        Location = trackedEntitiesService.GetUserLocation(userId) ??
                     (limitedUser.Location is not null ? UserLocation.Parse(limitedUser.Location) : null);
 
         weakReferenceMessenger.Register<FriendItemViewModel, FriendUpdateEvent>(this, (recipient, message) =>
@@ -52,12 +58,6 @@ public partial class FriendItemViewModel : ViewModelBase
 
             LoadDataCommand.Execute(null);
         });
-
-        PropertyChanged += (_, args) =>
-        {
-            if (args.PropertyName == nameof(User))
-                OnPropertyChanged(nameof(UserAvatarUrl));
-        };
     }
 
     [RelayCommand]

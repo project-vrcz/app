@@ -13,9 +13,9 @@ public partial class AvatarLocalFavoritesFolderPageViewModel(
     AvatarLocalFavoritesService avatarLocalFavoritesService,
     AvatarViewModelFactory avatarViewModelFactory) : PageViewModelBase
 {
-    [ObservableProperty] private AvatarFavoritesFolder? _folder;
+    [ObservableProperty] public partial AvatarFavoritesFolder? Folder { get; private set; }
 
-    [ObservableProperty] private ObservableCollection<AvatarViewModel> _avatars = [];
+    [ObservableProperty] public partial ObservableCollection<AvatarViewModel> Avatars { get; private set; } = [];
 
     [RelayCommand]
     private async Task Load()
@@ -43,6 +43,7 @@ public class AvatarLocalFavoritesFolderPageViewModelFactory(
 {
     public AvatarLocalFavoritesFolderPageViewModel Create(Guid folderId)
     {
-        return new AvatarLocalFavoritesFolderPageViewModel(folderId, avatarLocalFavoritesService, avatarViewModelFactory);
+        return new AvatarLocalFavoritesFolderPageViewModel(folderId, avatarLocalFavoritesService,
+            avatarViewModelFactory);
     }
 }
