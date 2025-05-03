@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions.Serialization;
 using VRCZ.Core.Exceptions;
 using VRCZ.Core.Exceptions.Pipeline;
+using VRCZ.Core.Messages;
 using VRCZ.Core.Models;
 using VRCZ.Core.Models.VRChat.WebSocket;
 using VRCZ.Core.Models.VRChat.WebSocket.Payload;
@@ -18,11 +19,9 @@ namespace VRCZ.Core.Services.Tracking;
 public class VRChatPipelineService(
     HttpClient httpClient,
     VRChatAuthService vrchatAuthService,
-    VRChatTrackedEntitiesService trackedEntitiesService,
+    MessengerService messengerService,
     ILogger<VRChatPipelineService> logger)
 {
-    public event EventHandler<VRChatWebSocketPayloadBase>? EventReceived;
-
     public PipelineStatus Status { get; private set; }
 
     private bool _requestDisconnect;
@@ -270,11 +269,6 @@ public class VRChatPipelineService(
                     break;
                 }
 
-                if (payload is IVRChatWebSocketWorldPayload { World: { } world })
-                {
-                    trackedEntitiesService.AddOrUpdateWorld(world);
-                }
-
                 if (payload is IVRChatCurrentUserPayload or IVRChatWebSocketFriendUserPayload)
                 {
                     if (contentNodes["user"] is not { } userNode)
@@ -304,75 +298,23 @@ public class VRChatPipelineService(
                     }
                 }
 
-                switch (payload)
-                {
-                    case FriendDeleteEvent friendDeleteEvent:
-                        trackedEntitiesService.RemoveFriend(friendDeleteEvent.UserId);
-                        break;
-                    case IVRChatCurrentUserPayload currentUserPayload:
-                        trackedEntitiesService.SetLoggedInUser(currentUserPayload.User!);
-                        break;
-                    case IVRChatWebSocketFriendUserPayload limitedUserPayload:
-                        trackedEntitiesService.AddOrUpdateFriend(limitedUserPayload.User!);
-                        break;
-                }
-
-                switch (payload)
-                {
-                    case FriendOfflineEvent friendOfflineEvent:
-                        trackedEntitiesService.AddOrUpdateUserLocation(friendOfflineEvent.UserId,
-                            new UserLocation(UserLocationType.Offline));
-                        break;
-                    case IVRChatWebSocketLocationPayload locationPayload:
-                        var userId = locationPayload switch
-                        {
-                            IVRChatCurrentUserPayload currentUserPayload => currentUserPayload.User?.Id ??
-                                                                            throw new UnexpectedApiBehaviourException(
-                                                                                "currentUserPayload.User is null"),
-                            IVRChatWebSocketFriendUserPayload friendUserPayload => friendUserPayload.User?.Id ??
-                                throw new UnexpectedApiBehaviourException("friendUserPayload.User is null"),
-                            _ => throw new UnexpectedApiBehaviourException("Unknown location payload type")
-                        };
-
-                        if (!string.IsNullOrWhiteSpace(locationPayload.Location) && !locationPayload.Location.Contains("traveling"))
-                        {
-                            await trackedEntitiesService.AddOrUpdateUserLocationWithWorldInstanceAsync(userId,
-                                UserLocation.Parse(locationPayload.Location));
-                            break;
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(locationPayload.TravelingToLocation))
-                        {
-                            await trackedEntitiesService.AddOrUpdateUserLocationWithWorldInstanceAsync(userId,
-                                UserLocation.Parse(locationPayload.TravelingToLocation) with
-                                {
-                                    LocationType = UserLocationType.Traveling
-                                });
-                            break;
-                        }
-
-                        trackedEntitiesService.AddOrUpdateUserLocation(userId,
-                            new UserLocation(UserLocationType.Unknown));
-                        break;
-                }
-
-                EventReceived?.Invoke(this, payload);
+                SendMessageToMessenger(payload);
 
                 break;
             case "see-notification":
                 if (eventResult.Content is null)
                     throw new UnexpectedApiBehaviourException("hide-notification Content is null");
 
-                EventReceived?.Invoke(this, new SeeNotificationEvent(eventResult.Content));
+                SendMessageToMessenger(new SeeNotificationEvent(eventResult.Content));
                 break;
             case "hide-notification":
                 if (eventResult.Content is null)
                     throw new UnexpectedApiBehaviourException("hide-notification Content is null");
 
-                EventReceived?.Invoke(this, new HideNotificationEvent(eventResult.Content));
+                SendMessageToMessenger(new HideNotificationEvent(eventResult.Content));
                 break;
             case "clear-notification":
-                EventReceived?.Invoke(this, new ClearNotificationEvent());
+                SendMessageToMessenger(new ClearNotificationEvent());
                 break;
             case "notification":
                 VRChatWebSocketPayloadBase? notificationPayload = null;
@@ -391,13 +333,18 @@ public class VRChatPipelineService(
                 }
                 else
                 {
-                    EventReceived?.Invoke(this, notificationPayload);
+                    SendMessageToMessenger(notificationPayload);
                 }
 
                 break;
             default:
                 throw new UnknownWebSocketEventTypeException(eventResult.Type);
         }
+    }
+
+    private void SendMessageToMessenger(VRChatWebSocketPayloadBase payload)
+    {
+        messengerService.Send(new VRChatPipelineMessage(payload));
     }
 
     private static VRChatWebSocketPayloadBase? GetNotificationPayload(string rawJson)

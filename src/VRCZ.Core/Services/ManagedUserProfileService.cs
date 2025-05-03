@@ -35,6 +35,8 @@ public class ManagedUserProfileService(
             vrchatTrackedEntitiesService.SetLoggedInUser(currentUser);
             await vrchatTrackedEntitiesService.GetFriendsAsync();
 
+            await vrchatTrackedEntitiesService.StartAsync();
+
             await vrchatPipelineService.ConnectAsync();
             await vrchatLoggingService.StartAsync();
         }

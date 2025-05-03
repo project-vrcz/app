@@ -16,6 +16,8 @@ public static class ServiceCollectionExtenstion
 
         services.AddKiotaHandlers();
 
+        services.AddSingleton<MessengerService>();
+
         services.AddSingleton<VRChatAuthService>();
         services.AddSingleton<UserProfileService>();
 

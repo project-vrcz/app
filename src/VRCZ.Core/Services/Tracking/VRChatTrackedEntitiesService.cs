@@ -1,16 +1,24 @@
 ﻿using System.Collections.Concurrent;
+using System.Threading.Channels;
+using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Http.HttpClientLibrary.Middleware.Options;
 using VRCZ.Core.Exceptions;
 using VRCZ.Core.Mappers;
+using VRCZ.Core.Messages;
 using VRCZ.Core.Models;
 using VRCZ.Core.Models.VRChat.TrackedEntities;
 using VRCZ.Core.Models.VRChat.WebSocket;
+using VRCZ.Core.Models.VRChat.WebSocket.Payload;
 using VRCZ.VRChatApi.Generated;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.Core.Services.Tracking;
 
-public class VRChatTrackedEntitiesService(VRChatApiClient vrchatApiClient)
+// TODO: Logging, Game Logger Event Handle
+public class VRChatTrackedEntitiesService(
+    VRChatApiClient vrchatApiClient,
+    MessengerService messengerService,
+    ILogger<VRChatTrackedEntitiesService> logger)
 {
     private CurrentUser? _loggedInUser;
 
@@ -20,6 +28,9 @@ public class VRChatTrackedEntitiesService(VRChatApiClient vrchatApiClient)
     private readonly ConcurrentDictionary<string, World> _worlds = [];
     private readonly ConcurrentDictionary<InstanceIdentity, TrackedVRChatInstance> _instances = [];
 
+    private CancellationTokenSource? _cancellationTokenSource;
+    private readonly Channel<VRChatPipelineMessage> _messageChannel = Channel.CreateUnbounded<VRChatPipelineMessage>();
+
     public event EventHandler<CurrentUser?>? LoggedInUserUpdated;
 
     public event EventHandler<LimitedUser>? FriendAdded;
@@ -27,6 +38,126 @@ public class VRChatTrackedEntitiesService(VRChatApiClient vrchatApiClient)
     public event EventHandler<LimitedUser>? FriendUpdated;
 
     public event EventHandler<UserLocationUpdatedEventArgs>? UserLocationUpdated;
+
+    public async Task StartAsync()
+    {
+        await StopAsync();
+
+        messengerService.Register<VRChatPipelineMessage>(WriteMessage);
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        _ = Task.Run(HandleEventLoop);
+    }
+
+    public async Task StopAsync()
+    {
+        messengerService.Unregister<VRChatPipelineMessage>(WriteMessage);
+
+        if (_cancellationTokenSource is null)
+            return;
+
+        await _cancellationTokenSource.CancelAsync();
+        _cancellationTokenSource.Dispose();
+    }
+
+    #region Event Handling
+
+    #region Pipeline
+
+    private void WriteMessage(VRChatPipelineMessage message)
+    {
+        _messageChannel.Writer.TryWrite(message);
+    }
+
+    private async Task HandleEventLoop()
+    {
+        try
+        {
+            while (!_cancellationTokenSource?.IsCancellationRequested ?? false)
+            {
+                var message = await _messageChannel.Reader.ReadAsync(_cancellationTokenSource.Token);
+
+                try
+                {
+                    await HandleEventAsync(message.Payload);
+                }
+                catch (Exception)
+                {
+                    logger.LogError("Error handling entities tracking event: {Message}", message);
+                }
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // ignore
+        }
+    }
+
+    private async Task HandleEventAsync(VRChatWebSocketPayloadBase payload)
+    {
+        if (payload is IVRChatWebSocketWorldPayload { World: { } world })
+            AddOrUpdateWorld(world);
+
+        switch (payload)
+        {
+            case FriendDeleteEvent friendDeleteEvent:
+                RemoveFriend(friendDeleteEvent.UserId);
+                break;
+            case IVRChatCurrentUserPayload currentUserPayload:
+                SetLoggedInUser(currentUserPayload.User!);
+                break;
+            case IVRChatWebSocketFriendUserPayload limitedUserPayload:
+                AddOrUpdateFriend(limitedUserPayload.User!);
+                break;
+        }
+
+        switch (payload)
+        {
+            case FriendOfflineEvent friendOfflineEvent:
+                AddOrUpdateUserLocation(friendOfflineEvent.UserId,
+                    new UserLocation(UserLocationType.Offline));
+                break;
+            case IVRChatWebSocketLocationPayload locationPayload:
+                var userId = locationPayload switch
+                {
+                    IVRChatCurrentUserPayload currentUserPayload => currentUserPayload.User?.Id ??
+                                                                    throw new UnexpectedApiBehaviourException(
+                                                                        "currentUserPayload.User is null"),
+                    IVRChatWebSocketFriendUserPayload friendUserPayload => friendUserPayload.User?.Id ??
+                                                                           throw new
+                                                                               UnexpectedApiBehaviourException(
+                                                                                   "friendUserPayload.User is null"),
+                    _ => throw new UnexpectedApiBehaviourException("Unknown location payload type")
+                };
+
+                if (!string.IsNullOrWhiteSpace(locationPayload.Location) &&
+                    !locationPayload.Location.Contains("traveling"))
+                {
+                    await AddOrUpdateUserLocationWithWorldInstanceAsync(userId,
+                        UserLocation.Parse(locationPayload.Location));
+                    break;
+                }
+
+                if (!string.IsNullOrWhiteSpace(locationPayload.TravelingToLocation))
+                {
+                    await AddOrUpdateUserLocationWithWorldInstanceAsync(userId,
+                        UserLocation.Parse(locationPayload.TravelingToLocation) with
+                        {
+                            LocationType = UserLocationType.Traveling
+                        });
+                    break;
+                }
+
+                AddOrUpdateUserLocation(userId,
+                    new UserLocation(UserLocationType.Unknown));
+                break;
+        }
+    }
+
+    #endregion
+
+    #endregion
 
     public CurrentUser? GetLoggedInUser()
     {
@@ -258,10 +389,9 @@ public class VRChatTrackedEntitiesService(VRChatApiClient vrchatApiClient)
     internal void RunUserLocationGc()
     {
         var userLocationsToRemove = _userLocations
-            .Where(
-                location =>
-                    _friends.All(user => user.Key != location.Key) &&
-                    _loggedInUser?.Id != location.Key)
+            .Where(location =>
+                _friends.All(user => user.Key != location.Key) &&
+                _loggedInUser?.Id != location.Key)
             .ToArray();
 
         foreach (var location in userLocationsToRemove)

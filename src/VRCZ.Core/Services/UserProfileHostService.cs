@@ -6,7 +6,8 @@ namespace VRCZ.Core.Services;
 public class UserProfileHostService(
     UserProfileService userProfileService,
     VRChatPipelineService vrchatPipelineService,
-    VRChatLoggingService vrchatLoggingService)
+    VRChatLoggingService vrchatLoggingService,
+    VRChatTrackedEntitiesService trackedEntitiesService)
     : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
@@ -31,6 +32,7 @@ public class UserProfileHostService(
             {
                 await vrchatPipelineService.DisconnectAsync();
                 await vrchatLoggingService.StopAsync();
+                await trackedEntitiesService.StartAsync();
             }
         }
         catch
