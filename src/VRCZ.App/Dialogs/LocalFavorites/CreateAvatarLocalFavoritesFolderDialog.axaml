@@ -15,6 +15,7 @@
                      AcceptsReturn="True" Height="100" VerticalContentAlignment="Top" Padding="8"/>
         </u:Form>
         <Button Command="{Binding CreateCommand}" HorizontalAlignment="Right"
+                IsEnabled="{Binding !HasErrors}"
                 Content="Create" Theme="{DynamicResource SolidButton}" />
     </StackPanel>
 </UserControl>

@@ -6,16 +6,24 @@ using VRCZ.Core.Services.LocalFavorites;
 
 namespace VRCZ.App.ViewModels.Dialogs.LocalFavorites;
 
-public partial class CreateAvatarLocalFavoritesFolderDialogViewModel(AvatarLocalFavoritesService localFavoritesService)
-    : ObservableValidator, IDialogContext
+public partial class CreateAvatarLocalFavoritesFolderDialogViewModel : ObservableValidator, IDialogContext
 {
+    private readonly AvatarLocalFavoritesService _localFavoritesService;
+
+    public CreateAvatarLocalFavoritesFolderDialogViewModel(AvatarLocalFavoritesService localFavoritesService)
+    {
+        _localFavoritesService = localFavoritesService;
+
+        ValidateAllProperties();
+    }
+
     [MinLength(1)]
     [Required]
+    [NotifyDataErrorInfo]
     [ObservableProperty]
     public partial string Name { get; set; } = "";
 
-    [ObservableProperty]
-    public partial string Description { get; set; } = "";
+    [ObservableProperty] public partial string Description { get; set; } = "";
 
     [RelayCommand]
     private async Task Create()
@@ -25,7 +33,7 @@ public partial class CreateAvatarLocalFavoritesFolderDialogViewModel(AvatarLocal
         if (HasErrors)
             return;
 
-        await localFavoritesService.CreateAvatarFavoritesFolderAsync(Name, Description);
+        await _localFavoritesService.CreateAvatarFavoritesFolderAsync(Name, Description);
 
         Close();
     }
