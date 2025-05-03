@@ -45,7 +45,8 @@ public class App : Application
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("VRCZ AvaloniaUI Previewer"));
 
-        AsyncImageLoader = new AppWebImageLoader(new RemoteImageService(httpClient, new MemoryCache(new MemoryCacheOptions())));
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        AsyncImageLoader = new AppWebImageLoader(new RemoteImageService(httpClient, memoryCache), memoryCache);
     }
 
     public override void Initialize()
