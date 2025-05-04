@@ -84,6 +84,8 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
         _fileSystemWatcher?.Dispose();
 
         _logChannel = null;
+
+        CurrentLogFilePath = null;
     }
 
     #endregion
@@ -253,6 +255,8 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
 
         _fileSystemWatcher?.Dispose();
         _cancellationTokenSource?.Dispose();
+
+        CurrentLogFilePath = null;
     }
 
     public async ValueTask DisposeAsync()
