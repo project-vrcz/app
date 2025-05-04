@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using VRCZ.Core.CompiledModels;
 using VRCZ.Core.Models.Entities;
 using VRCZ.Core.Models.Entities.LocalFavorites;
 using VRCZ.Core.Models.Entities.VRChat;
@@ -23,8 +22,8 @@ public class AppDbContext(
         var connectionString = connectionStringProvider.GetConnectionString();
 
         // dotnet ef dbcontext optimize --output-dir CompiledModels --namespace VRCZ.Core.CompiledModels
+        // TODO: aot & trim support after .net10 & efcore10 release
         optionsBuilder
-            .UseModel(AppDbContextModel.Instance)
             .UseSqlite(connectionString);
     }
 
