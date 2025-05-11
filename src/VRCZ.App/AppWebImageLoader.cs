@@ -25,7 +25,6 @@ public class AppWebImageLoader
 
         _memoryCacheEntryOptions.RegisterPostEvictionCallback((_, cacheEntry, _, _) =>
         {
-            Console.WriteLine("Cache removed");
             (cacheEntry as Bitmap)?.Dispose();
 
             GC.Collect();
