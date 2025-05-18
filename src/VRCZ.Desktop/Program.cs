@@ -1,6 +1,4 @@
 ﻿using Avalonia;
-using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using Avalonia.Controls;
@@ -34,7 +32,11 @@ internal sealed class Program
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .Enrich.FromLogContext()
-            .WriteTo.Console()
+#if DEBUG
+            .WriteTo.Console(applyThemeToRedirectedOutput: true, theme: AnsiConsoleTheme.Code)
+#else
+            .WriteTo.Console(applyThemeToRedirectedOutput: false, theme: AnsiConsoleTheme.Code)
+#endif
             .WriteTo.Debug()
             .CreateLogger();
 
