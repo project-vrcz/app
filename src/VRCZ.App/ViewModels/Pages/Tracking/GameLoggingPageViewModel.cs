@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using VRCZ.Core.GameLogging;
 using VRCZ.Core.Models.VRChat.Logging;
 using VRCZ.Core.Services.Tracking;
 
@@ -13,13 +14,34 @@ public partial class GameLoggingPageViewModel(VRChatLoggingService gameLoggingSe
 
     [ObservableProperty] public partial ObservableCollection<VRChatLogEntity> LogEntities { get; private set; } = [];
 
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+
+    private Stream? _logStream;
+    private VRChatGameLogReader? _logReader;
+
     [RelayCommand]
     private void Load()
     {
         LogPaths = new ObservableCollection<string>(gameLoggingService.GetVRChatLogPaths());
 
-        _ = gameLoggingService.ParseLogLoop(LogPaths.Last(),
-            async logEntity => { await Dispatcher.UIThread.InvokeAsync(() => { LogEntities.Add(logEntity); }); },
-            CancellationToken.None);
+        _logStream = File.Open(LogPaths.Last(), FileMode.Open, FileAccess.Read,
+            FileShare.ReadWrite | FileShare.Delete);
+        _logReader = new VRChatGameLogReader(_logStream);
+
+        _ = Task.Run(async () =>
+        {
+            while (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                var logEntity = await _logReader.ReadAsync();
+                await Dispatcher.UIThread.InvokeAsync(() => { LogEntities.Add(logEntity); });
+            }
+        });
+    }
+
+    [RelayCommand]
+    private void Unload()
+    {
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
     }
 }

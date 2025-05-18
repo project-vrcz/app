@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
+using VRCZ.Core.GameLogging;
 using VRCZ.Core.Models.VRChat.Logging;
 using VRCZ.Core.Utils;
 
@@ -16,10 +17,14 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
     private CancellationTokenSource? _cancellationTokenSource;
     private Channel<VRChatLogEntity>? _logChannel;
 
+    private bool _disposed;
+
     #region Start & Stop
 
     public Task StartAsync()
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         _fileSystemWatcher = new FileSystemWatcher(VRChatStorageUtils.GetVRChatStorageRootPath());
 
         _fileSystemWatcher.Created += async (_, args) =>
@@ -69,12 +74,13 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
 
         _ = HandleLogEntityLoop(_cancellationTokenSource.Token);
 
-        _ = ParseLogLoop(latestLogPath, async entity => { await _logChannel.Writer.WriteAsync(entity); },
-            _cancellationTokenSource.Token, true);
+        _ = ParseLogLoop(latestLogPath, _logChannel, true, _cancellationTokenSource.Token);
     }
 
     public async Task StopAsync()
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         if (_cancellationTokenSource is not null)
         {
             await _cancellationTokenSource.CancelAsync();
@@ -124,13 +130,13 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
 
     #region Streaming Log Parse
 
-    public async Task ParseLogLoop(string filePath, Func<VRChatLogEntity, Task> onLogEntityCreated,
-        CancellationToken cancellationToken, bool jumpToEnd = false)
+    private async Task ParseLogLoop(string filePath, Channel<VRChatLogEntity> channel, bool jumpToEnd = false,
+        CancellationToken cancellationToken = default)
     {
         try
         {
             await Task.Run(
-                async () => { await ParseLogLoopCore(filePath, onLogEntityCreated, cancellationToken, jumpToEnd); },
+                async () => { await ParseLogLoopCore(filePath, jumpToEnd, channel, cancellationToken); },
                 cancellationToken);
         }
         catch
@@ -139,104 +145,19 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
         }
     }
 
-    private async Task ParseLogLoopCore(string filePath, Func<VRChatLogEntity, Task> onLogEntityCreated,
-        CancellationToken cancellationToken, bool jumpToEnd)
+    private async Task ParseLogLoopCore(string filePath, bool jumpToEnd, Channel<VRChatLogEntity> channel,
+        CancellationToken cancellationToken = default)
     {
         await using var logFileStream =
             File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-        using var logStreamReader = new StreamReader(logFileStream);
 
-        using var stringReader = new StreamReader(logFileStream);
-
-        var logEntityStringBuilder = new StringBuilder();
-
-        string? lineStringBuffer = null;
-        var lineBuilder = new StringBuilder();
-
-        var isLastLoopReachEnd = false;
-        var isLastLoopReachEndHandled = false;
-
-        var allowCreateLogEntity = !jumpToEnd;
+        using var logReader = new VRChatGameLogReader(logFileStream);
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            if (lineStringBuffer is not null)
-            {
-                if (VRChatLogEntity.LogRegex.IsMatch(lineStringBuffer))
-                {
-                    if (logEntityStringBuilder.Length > 0)
-                    {
-                        if (allowCreateLogEntity)
-                            await CreateLogEntity(logEntityStringBuilder.ToString());
-                        else
-                            logEntityStringBuilder.Clear();
-                    }
-                }
+            var logEntity = await logReader.ReadAsync(cancellationToken);
 
-                if (logEntityStringBuilder.Length > 0)
-                    logEntityStringBuilder.Append(Environment.NewLine);
-
-                logEntityStringBuilder.Append(lineStringBuffer);
-                lineStringBuffer = null;
-            }
-
-            var character = stringReader.Read();
-
-            if (character == -1)
-            {
-                if (!allowCreateLogEntity)
-                    allowCreateLogEntity = true;
-
-                if (!isLastLoopReachEnd)
-                {
-                    isLastLoopReachEnd = true;
-                    isLastLoopReachEndHandled = false;
-                    continue;
-                }
-
-                if (isLastLoopReachEndHandled)
-                    continue;
-
-                var currentLineStringBuffer = lineBuilder.ToString();
-                var currentLogEntityStringBuffer =
-                    logEntityStringBuilder +
-                    (logEntityStringBuilder.Length != 0 && currentLineStringBuffer.Length != 0
-                        ? Environment.NewLine
-                        : "") +
-                    currentLineStringBuffer;
-
-                if (VRChatLogEntity.LogRegex.IsMatch(currentLogEntityStringBuffer))
-                {
-                    await CreateLogEntity(currentLogEntityStringBuffer);
-                }
-
-                isLastLoopReachEndHandled = true;
-
-                continue;
-            }
-
-            isLastLoopReachEnd = false;
-            isLastLoopReachEndHandled = false;
-
-            if (character is '\n' or '\r')
-            {
-                if (stringReader.Peek() == '\n')
-                    stringReader.Read();
-
-                lineStringBuffer = lineBuilder.ToString();
-                lineBuilder.Clear();
-                continue;
-            }
-
-            lineBuilder.Append((char)character);
-        }
-
-        async Task CreateLogEntity(string logEntityString)
-        {
-            var logEntity = VRChatLogEntity.Parse(logEntityString);
-            await onLogEntityCreated(logEntity);
-
-            logEntityStringBuilder.Clear();
+            await channel.Writer.WriteAsync(logEntity, cancellationToken);
         }
     }
 
@@ -251,16 +172,22 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
 
     public void Dispose()
     {
+        _disposed = true;
+
         _cancellationTokenSource?.Cancel();
 
         _fileSystemWatcher?.Dispose();
         _cancellationTokenSource?.Dispose();
 
         CurrentLogFilePath = null;
+
+        GC.SuppressFinalize(this);
     }
 
     public async ValueTask DisposeAsync()
     {
+        _disposed = true;
+
         if (_cancellationTokenSource is not null)
             await _cancellationTokenSource.CancelAsync();
 
