@@ -113,16 +113,13 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
                 var logEntity = await _logChannel.Reader.ReadAsync(cancellationToken);
 
                 logger.LogDebug("New log entity: {LogEntity}", logEntity);
+
+                // TODO: Log Event Handle
             }
         }
         catch (OperationCanceledException)
         {
             logger.LogInformation("Stopped log monitoring");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex,
-                "Error in monitoring log, monitoring will be stopped until next log file is created");
         }
     }
 
@@ -139,9 +136,15 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
                 async () => { await ParseLogLoopCore(filePath, jumpToEnd, channel, cancellationToken); },
                 cancellationToken);
         }
-        catch
+        catch (OperationCanceledException)
         {
             // ignore
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex,
+                "Error in log file parsing, log file will be monitored until next log file is created");
+            await StopAsync();
         }
     }
 
@@ -155,7 +158,15 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            var logEntity = await logReader.ReadAsync(cancellationToken);
+            VRChatLogEntity logEntity;
+            try
+            {
+                logEntity = await logReader.ReadAsync(cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
 
             await channel.Writer.WriteAsync(logEntity, cancellationToken);
         }
