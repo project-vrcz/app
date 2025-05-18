@@ -151,7 +151,7 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
         await using var logFileStream =
             File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
 
-        using var logReader = new VRChatGameLogReader(logFileStream);
+        using var logReader = new VRChatGameLogReader(logFileStream, jumpToEnd);
 
         while (!cancellationToken.IsCancellationRequested)
         {
