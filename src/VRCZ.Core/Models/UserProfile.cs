@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json.Serialization;
 
 namespace VRCZ.Core.Models;
 
+[ExcludeFromCodeCoverage]
 public class UserProfile
 {
     public string Id { get; set; } = "";
@@ -11,6 +13,7 @@ public class UserProfile
     public string AvatarUrl { get; set; } = "";
 }
 
+[ExcludeFromCodeCoverage]
 public class UserProfileSecret
 {
     public List<Cookie> Cookies { get; set; } = [];

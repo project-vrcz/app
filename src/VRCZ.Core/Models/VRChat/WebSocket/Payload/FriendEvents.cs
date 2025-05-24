@@ -1,8 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.Core.Models.VRChat.WebSocket.Payload;
 
+[ExcludeFromCodeCoverage]
 public record FriendAddEvent(
     [property: JsonPropertyName("userId")] string UserId
 ) : VRChatWebSocketPayloadBase, IVRChatWebSocketFriendUserPayload
@@ -10,10 +12,12 @@ public record FriendAddEvent(
     [JsonIgnore] public VRChatWebSocketFriendUser? User { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public record FriendDeleteEvent(
     [property: JsonPropertyName("userId")] string UserId
 ) : VRChatWebSocketPayloadBase;
 
+[ExcludeFromCodeCoverage]
 public record FriendOnlineEvent(
     [property: JsonPropertyName("userId")] string UserId,
     [property: JsonPropertyName("platform")]
@@ -33,6 +37,7 @@ public record FriendOnlineEvent(
     [JsonIgnore] public VRChatWebSocketFriendUser? User { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public record FriendActiveEvent(
     [property: JsonPropertyName("userId")] string UserId,
     [property: JsonPropertyName("platform")]
@@ -42,10 +47,12 @@ public record FriendActiveEvent(
     [JsonIgnore] public VRChatWebSocketFriendUser? User { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public record FriendOfflineEvent(
     [property: JsonPropertyName("userId")] string UserId
 ) : VRChatWebSocketPayloadBase;
 
+[ExcludeFromCodeCoverage]
 public record FriendUpdateEvent(
     [property: JsonPropertyName("userId")] string UserId
 ) : VRChatWebSocketPayloadBase, IVRChatWebSocketFriendUserPayload
@@ -53,6 +60,7 @@ public record FriendUpdateEvent(
     [JsonIgnore] public VRChatWebSocketFriendUser? User { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public record FriendLocationEvent(
     [property: JsonPropertyName("userId")] string UserId,
     [property: JsonPropertyName("location")]

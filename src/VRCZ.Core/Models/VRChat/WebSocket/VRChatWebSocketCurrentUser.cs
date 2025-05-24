@@ -1,8 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using Microsoft.Kiota.Abstractions;
 
 namespace VRCZ.Core.Models.VRChat.WebSocket;
 
+[ExcludeFromCodeCoverage]
 public class VRChatWebSocketCurrentUser
 {
     [JsonPropertyName("id")] public string? Id { get; set; }

@@ -1,7 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace VRCZ.Core.Models.VRChat.TrackedEntities;
 
+[ExcludeFromCodeCoverage]
 public class TrackedVRChatInstance
 {
     [JsonPropertyName("active")] public bool? Active { get; set; }
@@ -49,6 +51,7 @@ public class TrackedVRChatInstance
     [JsonPropertyName("hardClose")] public bool? HardClose { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class PlatformPlayerCount
 {
     [JsonPropertyName("android")] public long? Android { get; set; }

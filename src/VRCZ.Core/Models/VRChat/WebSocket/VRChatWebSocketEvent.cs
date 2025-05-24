@@ -1,18 +1,22 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using VRCZ.Core.Models.VRChat.WebSocket.Payload;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.Core.Models.VRChat.WebSocket;
 
+[ExcludeFromCodeCoverage]
 public record VRChatWebSocketEvent(
     [property: JsonPropertyName("type")] string Type,
     [property: JsonPropertyName("content")]
     string? Content);
 
+[ExcludeFromCodeCoverage]
 public record VRChatWebSocketErrorEvent(
     [property: JsonPropertyName("err")] string ErrorMessage
 );
 
+[ExcludeFromCodeCoverage]
 public abstract record VRChatWebSocketPayloadBase;
 
 public interface IVRChatCurrentUserPayload

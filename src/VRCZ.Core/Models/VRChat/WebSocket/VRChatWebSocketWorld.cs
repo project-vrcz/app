@@ -1,8 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.Core.Models.VRChat.WebSocket;
 
+[ExcludeFromCodeCoverage]
 public class VRChatWebSocketWorld
 {
     [JsonPropertyName("id")] public required string Id { get; set; }

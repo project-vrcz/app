@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace VRCZ.Core.Models.Entities.VRChat;
 
+[ExcludeFromCodeCoverage]
 public class AvatarEntity : BaseEntityWithoutId
 {
     [Key]

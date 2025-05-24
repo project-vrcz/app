@@ -1,8 +1,9 @@
-﻿using Microsoft.Kiota.Abstractions;
+﻿using System.Diagnostics.CodeAnalysis;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.Core.Models.VRChat.TrackedEntities;
 
+[ExcludeFromCodeCoverage]
 public class TrackedVRChatUser
 {
     public AgeVerificationStatus? AgeVerificationStatus { get; set; }
