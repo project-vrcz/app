@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Http.HttpClientLibrary.Middleware.Options;
@@ -577,10 +578,12 @@ public class VRChatTrackedEntitiesService(
     #endregion
 }
 
+[ExcludeFromCodeCoverage]
 public class UserLocationUpdatedEventArgs(string userId, UserLocation userLocation) : EventArgs
 {
     public string UserId { get; } = userId;
     public UserLocation UserLocation { get; } = userLocation;
 }
 
+[ExcludeFromCodeCoverage]
 public record InstanceIdentity(string WorldId, string InstanceId);
