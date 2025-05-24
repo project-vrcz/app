@@ -14,9 +14,6 @@ public partial record VRChatLogEntity(DateTime Timestamp, string LogLevel, strin
     {
         var lines = logLine.Split(["\r\n", "\n", "\r"], StringSplitOptions.None);
 
-        if (lines.Length == 0)
-            throw new FormatException("Invalid log line format.");
-
         var match = LogRegex.Match(lines[0]);
 
         if (!match.Success)
