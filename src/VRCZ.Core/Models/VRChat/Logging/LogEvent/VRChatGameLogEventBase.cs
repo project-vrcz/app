@@ -1,6 +1,9 @@
-﻿namespace VRCZ.Core.Models.VRChat.Logging.LogEvent;
+﻿using System.Diagnostics.CodeAnalysis;
 
-public record VRChatGameLogEventBase(VRChatLogEntity LogEntity)
+namespace VRCZ.Core.Models.VRChat.Logging.LogEvent;
+
+[ExcludeFromCodeCoverage]
+public abstract record VRChatGameLogEventBase(VRChatLogEntity LogEntity)
 {
     public DateTime Timestamp => LogEntity.Timestamp;
 }
