@@ -19,7 +19,7 @@ public record UserLocation(
 
 
         var locationStringParts = locationString.Split(':');
-        if (locationStringParts.Length != 2)
+        if (locationStringParts.Length != 2 || string.IsNullOrWhiteSpace(locationStringParts[0]) || string.IsNullOrWhiteSpace(locationStringParts[1]))
             throw new ArgumentException("Invalid location string", nameof(locationString));
 
         if (locationStringParts[0] == "offline" || locationStringParts[1] == "offline")
