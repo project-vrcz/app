@@ -198,12 +198,14 @@ public class VRChatLogEntityTest
         "    Portal Mode: PlaceManually\n"
     ];
 
-    [Fact]
-    public void ParseSingleLine()
+[Fact]
+    public void ParseSingleLine_ShouldParseCorrectly()
     {
+        // Arrange & Act & Assert
         foreach (var (expected, logString) in SingleLineLogEntities.Zip(SingleLineLogStrings))
         {
             var logEntity = VRChatLogEntity.Parse(logString);
+
             Assert.Equal(expected.Timestamp, logEntity.Timestamp);
             Assert.Equal(expected.LogLevel, logEntity.LogLevel);
             Assert.Equal(expected.Message, logEntity.Message);
@@ -211,11 +213,13 @@ public class VRChatLogEntityTest
     }
 
     [Fact]
-    public void ParseMultiLine()
+    public void ParseMultiLine_ShouldParseCorrectly()
     {
+        // Arrange & Act & Assert
         foreach (var (expected, logString) in MultiLineLogEntities.Zip(MultiLineLogStrings))
         {
             var logEntity = VRChatLogEntity.Parse(logString);
+
             Assert.Equal(expected.Timestamp, logEntity.Timestamp);
             Assert.Equal(expected.LogLevel, logEntity.LogLevel);
             Assert.Equal(expected.Message, logEntity.Message);
@@ -223,14 +227,16 @@ public class VRChatLogEntityTest
     }
 
     [Fact]
-    public void ParseEmptyString()
+    public void Parse_ShouldThrowFormatException_WhenInputIsEmpty()
     {
+        // Act & Assert
         Assert.Throws<FormatException>(() => VRChatLogEntity.Parse(string.Empty));
     }
 
     [Fact]
-    public void ParseInvalidFormat()
+    public void Parse_ShouldThrowFormatException_WhenFormatIsInvalid()
     {
+        // Act & Assert
         Assert.Throws<FormatException>(() => VRChatLogEntity.Parse(InvalidLogString));
     }
 }
