@@ -7,12 +7,12 @@ on:
 jobs:
   build-and-test:
 
-    name: build-and-test-${{ matrix.project }}-${{ matrix.os }}
+    name: ${{ matrix.project }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [windows-latest]
-        project: ["test/VRCZ.Core.Tests.Unit"]
+        project: ["VRCZ.Core.Tests.Unit"]
 
     steps:
     - name: Checkout
@@ -30,4 +30,9 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Test
-      run: dotnet test ${{ matrix.project }} --no-build --verbosity normal
+      uses: zyborg/dotnet-tests-report@ce730c068bb73480dcb37c02d40890bf8b44c953
+      with:
+        project_path: test/${{ matrix.project }}
+        report_name: ${{ matrix.project }}
+        report_title: ${{ matrix.project }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
