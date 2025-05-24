@@ -21,7 +21,7 @@ public class MessengerService
         var type = typeof(T);
         if (!_subscribers.TryGetValue(type, out var value)) return;
 
-        value.Remove(o => action((T)o));
+        // TODO: unregister by reference
 
         if (value.Count == 0)
             _subscribers.Remove(type);
