@@ -1,7 +1,7 @@
-﻿using System.Text;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 using VRCZ.Core.GameLogging;
+using VRCZ.Core.GameLogging.LogEvent;
 using VRCZ.Core.Models.VRChat.Logging;
 using VRCZ.Core.Utils;
 
@@ -112,7 +112,9 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
 
                 var logEntity = await _logChannel.Reader.ReadAsync(cancellationToken);
 
-                logger.LogDebug("New log entity: {LogEntity}", logEntity);
+                // logger.LogDebug("New log entity: {LogEntity}", logEntity);
+
+                await ParseLogEvent(logEntity);
 
                 // TODO: Log Event Handle
             }
@@ -125,7 +127,7 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
 
     #endregion
 
-    #region Streaming Log Parse
+    #region Log Parse Loop
 
     private async Task ParseLogLoop(string filePath, Channel<VRChatLogEntity> channel, bool jumpToEnd = false,
         CancellationToken cancellationToken = default)
@@ -173,6 +175,18 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
     }
 
     #endregion
+
+    private async ValueTask ParseLogEvent(VRChatLogEntity logEntity)
+    {
+        var parser = new VRChatGameLogEventParser();
+
+        var logEvent = parser.Parse(logEntity);
+
+        if (logEvent is null)
+            return;
+
+        logger.LogInformation("Parsed log event: {LogEvent}", logEvent);
+    }
 
     public string[] GetVRChatLogPaths()
     {
