@@ -8,7 +8,7 @@ namespace VRCZ.Core.Services;
 
 public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
 {
-    private const string MemoryCacheKeyPrefix = "remote-image-";
+    internal const string MemoryCacheKeyPrefix = "remote-image-";
 
     private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(5);
 
@@ -54,7 +54,7 @@ public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
         return null;
     }
 
-    private string GetMemoryCacheKey(string url)
+    internal string GetMemoryCacheKey(string url)
     {
         return MemoryCacheKeyPrefix + url;
     }
@@ -103,7 +103,7 @@ public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
         return Path.Combine(ProfileStorageUtils.GetImageCacheRootPath(), cacheKey);
     }
 
-    private string GetVRChatFileCacheKey(string urlPath)
+    internal string GetVRChatFileCacheKey(string urlPath)
     {
         var pathParts = urlPath.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();
         pathParts = pathParts[3..]
@@ -128,18 +128,18 @@ public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
         return Path.Join(pathParts.ToArray());
     }
 
-    private bool IsVRChatFiles(Uri uri)
+    internal bool IsVRChatFiles(Uri uri)
     {
         return uri.Host is "vrchat.com" or "api.vrchat.cloud" &&
                (uri.AbsolutePath.StartsWith("/api/1/image/") || uri.AbsolutePath.StartsWith("/api/1/file/"));
     }
 
-    private static string GetShortMD5(string input)
+    internal static string GetShortMD5(string input)
     {
         return GetMD5(input).Substring(0, 5);
     }
 
-    private static string GetMD5(string input)
+    internal static string GetMD5(string input)
     {
         var hash = MD5.HashData(Encoding.UTF8.GetBytes(input));
         return Convert.ToHexStringLower(hash);
