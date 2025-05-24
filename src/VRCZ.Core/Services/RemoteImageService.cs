@@ -119,8 +119,9 @@ public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
             })
             .ToList();
 
+        // 8c7dd is short MD5 of "file"
         if (pathParts.Count == 2)
-            pathParts.Add("file");
+            pathParts.Add("file_8c7dd");
 
         pathParts.Insert(0, "vrchat-files");
 
