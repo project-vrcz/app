@@ -16,6 +16,7 @@ jobs:
 
     env:
       coverage-result-artifact-name: coverage-result-${{ matrix.project }}-${{ matrix.os }}
+      coverage-result-file-directory: coverage
 
     outputs:
       coverage-result-file-directory: ${{ env.coverage-result-file-directory }}
@@ -42,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.coverage-result-artifact-name }}
-          path: coverage/
+          path: ${{ env.coverage-result-file-directory }}
 
   generate-code-coverage-summary:
     name: Generate Code Coverage Summary
