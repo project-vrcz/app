@@ -32,5 +32,5 @@ jobs:
       - name: Code Coverage Summary
         uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 #v1.3.0
         with:
-          filename: ${{ env.coverage-result-artifact-download-path }}/**/${{ inputs.coverage-result-directory }}/coverage.cobertura.xml
+          filename: ${{ env.coverage-result-artifact-download-path }}/**/${{ inputs.coverage-result-directory }}/**/coverage.cobertura.xml
           badge: true
