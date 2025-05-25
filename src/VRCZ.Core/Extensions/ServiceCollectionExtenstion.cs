@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using Microsoft.Extensions.DependencyInjection;
 using VRCZ.Core.DbContexts;
 using VRCZ.Core.Services;
@@ -8,6 +9,7 @@ using VRCZ.Core.Services.Tracking;
 
 namespace VRCZ.Core.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtenstion
 {
     public static IServiceCollection AddVRCZCore(this IServiceCollection services)

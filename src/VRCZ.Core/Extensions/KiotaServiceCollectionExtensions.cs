@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 using Microsoft.Kiota.Http.HttpClientLibrary.Middleware;
 using Microsoft.Kiota.Http.HttpClientLibrary.Middleware.Options;
@@ -8,6 +9,7 @@ namespace VRCZ.Core.Extensions;
 /// <summary>
 /// Service collection extensions for Kiota handlers.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class KiotaServiceCollectionExtensions
 {
     /// <summary>
@@ -43,7 +45,7 @@ public static class KiotaServiceCollectionExtensions
         // Dynamically load the Kiota handlers from the Client Factory
         var kiotaHandlers = KiotaClientFactory.GetDefaultHandlerActivatableTypes();
         // And attach them to the http client builder
-        foreach(var handler in kiotaHandlers)
+        foreach (var handler in kiotaHandlers)
         {
             builder.AddHttpMessageHandler((sp) => (DelegatingHandler)sp.GetRequiredService(handler));
         }
