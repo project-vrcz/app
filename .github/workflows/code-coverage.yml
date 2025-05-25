@@ -1,16 +1,16 @@
 name: Generate Coverage Summary
 on:
-  workflow_call:
-    inputs:
-      coverage-result-artifact-name-pattern:
-        description: "Pattern to match the coverage result artifact name"
-        required: true
-        default: "coverage-result-*"
-        type: string
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
+  build-and-test:
+    uses: "./.github/workflows/test.yml"
+
   generate-coverage-summary:
     name: Generate Code Coverage Summary
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     env:
@@ -21,7 +21,7 @@ jobs:
         id: download-artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: ${{ inputs.coverage-result-artifact-name-pattern }}
+          pattern: ${{ needs.build-and-test.outputs.coverage-result-artifact-name-pattern}}
           path: ${{ env.coverage-result-artifact-download-path }}
 
       - name: Tree

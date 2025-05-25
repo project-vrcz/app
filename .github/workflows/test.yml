@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+  workflow_call:
+    outputs:
+      coverage-result-artifact-name-pattern:
+        description: "Pattern to match the coverage result artifact name"
+        value: "coverage-result-*"
 
 jobs:
   build-and-test:
@@ -17,9 +22,6 @@ jobs:
     env:
       coverage-result-artifact-name: coverage-result-${{ matrix.project }}-${{ matrix.os }}
       coverage-result-file-directory: coverage
-
-    outputs:
-      coverage-result-file-directory: ${{ env.coverage-result-file-directory }}
 
     steps:
       - name: Checkout
@@ -44,10 +46,3 @@ jobs:
         with:
           name: ${{ env.coverage-result-artifact-name }}
           path: ${{ env.coverage-result-file-directory }}
-
-  generate-code-coverage-summary:
-    name: Generate Code Coverage Summary
-    uses: "./.github/workflows/generate-coverage-summary.yml"
-    needs: build-and-test
-    with:
-      coverage-result-artifact-name-pattern: "coverage-result-*"
