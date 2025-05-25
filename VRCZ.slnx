@@ -1,8 +1,6 @@
 <Solution>
-  <Folder Name="/src/SolutionItems/">
-    <File Path="src/Directory.Packages.props" />
-    <File Path="src/nuget.config" />
-    <File Path="src/Directory.Build.targets" />
+  <Folder Name="/GlobalSolutionItems/">
+    <File Path="nuget.config" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/VRCZ.App/VRCZ.App.csproj" />
@@ -10,7 +8,16 @@
     <Project Path="src/VRCZ.Desktop/VRCZ.Desktop.csproj" />
     <Project Path="src/VRCZ.VRChatApi.Generated/VRCZ.VRChatApi.Generated.csproj" />
   </Folder>
+  <Folder Name="/src/SolutionItems/">
+    <File Path="src/Directory.Packages.props" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Build.targets" />
+  </Folder>
   <Folder Name="/test/">
     <Project Path="test/VRCZ.Core.Tests.Unit/VRCZ.Core.Tests.Unit.csproj" />
+  </Folder>
+  <Folder Name="/test/SolutionItems/">
+    <File Path="test/Directory.Packages.props" />
+    <File Path="test/Directory.Build.targets" />
   </Folder>
 </Solution>

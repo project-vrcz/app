@@ -1,7 +1,5 @@
 <Project>
     <PropertyGroup>
-        <Nullable>enable</Nullable>
-        <IsAotCompatible>true</IsAotCompatible>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <!-- <IsAotCompatible>true</IsAotCompatible> -->
     </PropertyGroup>
 </Project>
