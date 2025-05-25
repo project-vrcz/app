@@ -15,9 +15,8 @@ public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
     public async Task<Stream> GetImageStreamAsync(string url)
     {
         var uri = new Uri(url);
-        var normalizeUrl = uri.ToString();
 
-        if (GetMemoryCache(normalizeUrl) is { } memoryCacheStream)
+        if (GetMemoryCache(uri) is { } memoryCacheStream)
             return memoryCacheStream;
 
         if (await GetDiskCache(url) is { } diskCacheCache)
@@ -25,13 +24,13 @@ public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
 
         var bytes = await httpClient.GetByteArrayAsync(url);
 
-        SetMemoryCache(url, bytes);
+        SetMemoryCache(uri, bytes);
         await SetDiskCache(url, bytes);
 
         return new MemoryStream(bytes);
     }
 
-    private void SetMemoryCache(string url, byte[] bytes)
+    private void SetMemoryCache(Uri url, byte[] bytes)
     {
         var key = GetMemoryCacheKey(url);
 
@@ -44,7 +43,7 @@ public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
         });
     }
 
-    private MemoryStream? GetMemoryCache(string url)
+    private MemoryStream? GetMemoryCache(Uri url)
     {
         var key = GetMemoryCacheKey(url);
 
@@ -54,8 +53,11 @@ public class RemoteImageService(HttpClient httpClient, IMemoryCache memoryCache)
         return null;
     }
 
-    internal string GetMemoryCacheKey(string url)
+    internal string GetMemoryCacheKey(Uri url)
     {
+        if (IsVRChatFiles(url))
+            return MemoryCacheKeyPrefix + GetVRChatFileCacheKey(url.AbsolutePath);
+
         return MemoryCacheKeyPrefix + url;
     }
 

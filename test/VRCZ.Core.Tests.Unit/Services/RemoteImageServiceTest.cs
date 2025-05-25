@@ -40,8 +40,22 @@ public class RemoteImageServiceTest
     public void GetMemoryCacheKey_ShouldReturnCorrectKey()
     {
         // Arrange
-        var url = "https://example.com/image.png";
+        var url = new Uri("https://example.com/image.png");
         var expectedKey = RemoteImageService.MemoryCacheKeyPrefix + url;
+
+        // Act
+        var key = _remoteImageService.GetMemoryCacheKey(url);
+
+        // Assert
+        Assert.Equal(expectedKey, key);
+    }
+
+    [Fact]
+    public void GetMemoryCacheKey_VRChatFile_ShouldReturnCorrectKey()
+    {
+        // Arrange
+        var url = new Uri(TestVRChatImageUrl);
+        var expectedKey = RemoteImageService.MemoryCacheKeyPrefix + _remoteImageService.GetVRChatFileCacheKey(TestVRChatImagePath);
 
         // Act
         var key = _remoteImageService.GetMemoryCacheKey(url);
