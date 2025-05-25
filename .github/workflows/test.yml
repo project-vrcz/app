@@ -16,7 +16,7 @@ jobs:
 
     env:
       coverage-result-artifact-name: coverage-result-${{ matrix.project }}-${{ matrix.os }}
-      coverage-result-file-directory: ./coverage
+      coverage-result-file-directory: coverage
 
     outputs:
       coverage-result-file-directory: ${{ env.coverage-result-file-directory }}
@@ -50,5 +50,5 @@ jobs:
     uses: "./.github/workflows/generate-coverage-summary.yml"
     needs: build-and-test
     with:
-      coverage-result-path: ${{ needs.build-and-test.outputs.coverage-result-file-directory }}
+      coverage-result-directory: ${{ needs.build-and-test.outputs.coverage-result-file-directory }}
       coverage-result-artifact-name-pattern: "coverage-result-*"
