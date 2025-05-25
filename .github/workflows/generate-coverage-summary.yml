@@ -30,7 +30,7 @@ jobs:
           path: ${{ env.coverage-result-artifact-download-path }}
 
       - name: Tree
-        run: tree -d ${{ env.coverage-result-artifact-download-path }}
+        run: tree ${{ env.coverage-result-artifact-download-path }}
 
       - name: Code Coverage Summary
         uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 #v1.3.0
