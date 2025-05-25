@@ -3,10 +3,10 @@ name: Test
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build-and-test:
-
     name: ${{ matrix.project }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -14,25 +14,40 @@ jobs:
         os: [windows-latest]
         project: ["VRCZ.Core.Tests.Unit"]
 
+    env:
+      coverage-result-artifact-name: coverage-result--${{ matrix.project }}-${{ matrix.os }}
+
+    outputs:
+      coverage-result-artifact-id: ${{ steps.upload-coverage-result-artifact.outputs.artifact-id }}
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.x
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Build
-      run: dotnet build --no-restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-    - name: Test
-      uses: zyborg/dotnet-tests-report@ce730c068bb73480dcb37c02d40890bf8b44c953
-      with:
-        project_path: test/${{ matrix.project }}
-        report_name: ${{ matrix.project }}
-        report_title: ${{ matrix.project }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test
+        run: dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Upload Coverage Result
+        id: upload-coverage-result-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.coverage-result-artifact-name }}
+          path: coverage/
+
+  generate-code-coverage-summary:
+    name: Generate Code Coverage Summary
+    uses: "./.github/workflows/generate-coverate-summary.yml"
+    needs: build-and-test
+    with:
+      coverage-result-artifact-id: ${{ needs.build-and-test.outputs.coverage-result-artifact-id }}

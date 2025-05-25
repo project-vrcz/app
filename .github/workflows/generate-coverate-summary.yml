@@ -1,0 +1,29 @@
+name: Generate Coverage Summary
+on:
+  workflow_call:
+    inputs:
+      coverage-result-artifact-id:
+        description: "The ID of the coverage result artifact to download"
+        required: true
+        type: string
+
+jobs:
+  generate-coverage-summary:
+    runs-on: ubuntu-latest
+
+    env:
+      coverage-result-artifact-download-path: ${{ github.workspace }}/coverage-results
+
+    steps:
+      - name: Download Coverage Result
+        id: download-artifacts
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ inputs.coverage-result-artifact-id }}
+          path: ${{ env.coverage-result-artifact-download-path }}
+
+      - name: Code Coverage Summary
+        uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 #v1.3.0
+        with:
+          filename: ${{ env.coverage-result-artifact-download-path }}/coverage-results/**/coverage.cobertura.xml
+          badge: true
