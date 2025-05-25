@@ -1,4 +1,4 @@
-name: Generate Coverage Summary
+name: Code Coverage
 on:
   push:
   pull_request:
@@ -32,3 +32,6 @@ jobs:
         with:
           filename: ${{ env.coverage-result-artifact-download-path }}/**/**/*.xml
           badge: true
+
+      - name: Create Action Summary
+        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
