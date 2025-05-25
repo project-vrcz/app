@@ -13,6 +13,10 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
     env:
       coverage-result-artifact-download-path: coverage-results
 
@@ -30,10 +34,12 @@ jobs:
       - name: Code Coverage Summary
         uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 #v1.3.0
         with:
-          filename: ${{ env.coverage-result-artifact-download-path }}/**/**/*.xml
+          filename: ${{ env.coverage-result-artifact-download-path }}/*-${{ matrix.os }}/**/*.xml
           badge: true
           output: both
           format: markdown
 
       - name: Create Action Summary
-        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+        run: |
+          echo "## ${{ matrix.os }}" >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
