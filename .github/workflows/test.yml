@@ -27,12 +27,14 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --configuration Release --no-restore
 
     - name: Test
-      uses: zyborg/dotnet-tests-report@ce730c068bb73480dcb37c02d40890bf8b44c953
+      run: dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+    - name: Code Coverage Summary
+      uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 #v1.3.0
       with:
-        project_path: test/${{ matrix.project }}
-        report_name: ${{ matrix.project }}
-        report_title: ${{ matrix.project }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        filename: coverage/**/coverage.cobertura.xml
+        badge: true
+        
