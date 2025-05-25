@@ -32,6 +32,7 @@ jobs:
         with:
           filename: ${{ env.coverage-result-artifact-download-path }}/**/**/*.xml
           badge: true
+          output: both
 
       - name: Create Action Summary
         run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
