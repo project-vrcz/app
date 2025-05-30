@@ -112,7 +112,7 @@ public class VRChatLoggingService(ILogger<VRChatLoggingService> logger) : IAsync
 
                 var logEntity = await _logChannel.Reader.ReadAsync(cancellationToken);
 
-                // logger.LogDebug("New log entity: {LogEntity}", logEntity);
+                logger.LogDebug("New log entity: {LogEntity}", logEntity);
 
                 await ParseLogEvent(logEntity);
 

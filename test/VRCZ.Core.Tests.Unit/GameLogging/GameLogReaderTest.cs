@@ -170,4 +170,46 @@ public class GameLogReaderTest
             Assert.Equal(expectedEntity, entity);
         }
     }
+
+    // TODO: Stream Read Test
+
+    [Fact]
+    public async Task Read_EmptyStream_CancelCancellationTokenAfterStart_ShouldOperationCanceledException()
+    {
+        using var stream = new MemoryStream();
+
+        using var reader = new VRChatGameLogReader(stream, jumpToEnd: false);
+
+        var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(2));
+
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            await reader.ReadAsync(cts.Token));
+    }
+
+    [Fact]
+    public async Task Read_EmptyStream_CancelCancellationTokenBeforeStart_ShouldOperationCanceledException()
+    {
+        using var stream = new MemoryStream();
+
+        using var reader = new VRChatGameLogReader(stream, jumpToEnd: false);
+
+        var cts = new CancellationTokenSource();
+        await cts.CancelAsync();
+
+        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+            await reader.ReadAsync(cts.Token));
+    }
+
+    [Fact]
+    public async Task Read_ShouldThrowObjectDisposedException_WhenDisposed()
+    {
+        using var stream = new MemoryStream();
+        var reader = new VRChatGameLogReader(stream, jumpToEnd: false);
+
+        reader.Dispose();
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
+            await reader.ReadAsync(TestContext.Current.CancellationToken));
+    }
 }
