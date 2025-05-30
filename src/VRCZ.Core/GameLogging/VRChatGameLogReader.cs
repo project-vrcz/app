@@ -73,6 +73,9 @@ public sealed class VRChatGameLogReader : IDisposable
                 if (!allowCreateLogEntity)
                     allowCreateLogEntity = true;
 
+                if (_isLastLoopReachEndHandled)
+                    continue;
+
                 if (!_isLastLoopReachEnd)
                 {
                     _isLastLoopReachEnd = true;
@@ -80,24 +83,8 @@ public sealed class VRChatGameLogReader : IDisposable
                     continue;
                 }
 
-                if (_isLastLoopReachEndHandled)
-                    continue;
-
-                var currentLineStringBuffer = lineBuilder.ToString();
-                var currentLogEntityStringBuffer =
-                    _logEntityStringBuilder +
-                    (_logEntityStringBuilder.Length != 0 && currentLineStringBuffer.Length != 0
-                        ? Environment.NewLine
-                        : "") +
-                    currentLineStringBuffer;
-
-                _isLastLoopReachEndHandled = true;
-
-                if (VRChatLogEntity.LogRegex.IsMatch(currentLogEntityStringBuffer))
-                {
-                    _logEntityStringBuilder.Clear();
-                    return VRChatLogEntity.Parse(currentLogEntityStringBuffer);
-                }
+                if (HandleEndOfStream() is {} logEntity)
+                    return logEntity;
 
                 continue;
             }
@@ -116,6 +103,32 @@ public sealed class VRChatGameLogReader : IDisposable
             }
 
             lineBuilder.Append((char)character);
+        }
+
+        VRChatLogEntity? HandleEndOfStream()
+        {
+            var currentLineStringBuffer = lineBuilder.ToString();
+
+            // if (VRChatLogEntity.LogRegex.IsMatch(currentLineStringBuffer))
+            // {
+            //     lineBuilder.Clear();
+            //     return VRChatLogEntity.Parse(currentLineStringBuffer);
+            // }
+
+            var currentLogEntityStringBuffer =
+                _logEntityStringBuilder +
+                (_logEntityStringBuilder.Length != 0 && currentLineStringBuffer.Length != 0
+                    ? Environment.NewLine
+                    : "") +
+                currentLineStringBuffer;
+
+            _isLastLoopReachEndHandled = true;
+
+            if (!VRChatLogEntity.LogRegex.IsMatch(currentLogEntityStringBuffer))
+                return null;
+
+            _logEntityStringBuilder.Clear();
+            return VRChatLogEntity.Parse(currentLogEntityStringBuffer);
         }
     }
 
