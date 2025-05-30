@@ -46,15 +46,7 @@ public sealed class VRChatGameLogReader : IDisposable
 
             if (lineStringBuffer is not null)
             {
-                VRChatLogEntity? logEntity = null;
-                if (VRChatLogEntity.LogRegex.IsMatch(lineStringBuffer))
-                {
-                    if (_logEntityStringBuilder.Length > 0 && allowCreateLogEntity)
-                    {
-                        logEntity = VRChatLogEntity.Parse(_logEntityStringBuilder.ToString());
-                        _logEntityStringBuilder.Clear();
-                    }
-                }
+                var logEntity = TryCreateLogEntityFromCurrentEntityBuffer();
 
                 if (_logEntityStringBuilder.Length > 0)
                     _logEntityStringBuilder.Append(Environment.NewLine);
@@ -105,15 +97,29 @@ public sealed class VRChatGameLogReader : IDisposable
             lineBuilder.Append((char)character);
         }
 
+        VRChatLogEntity? TryCreateLogEntityFromCurrentEntityBuffer()
+        {
+            if (!VRChatLogEntity.LogRegex.IsMatch(lineStringBuffer))
+                return null;
+
+            if (_logEntityStringBuilder.Length <= 0 || !allowCreateLogEntity)
+                return null;
+
+            var logEntity = VRChatLogEntity.Parse(_logEntityStringBuilder.ToString());
+            _logEntityStringBuilder.Clear();
+
+            return logEntity;
+        }
+
         VRChatLogEntity? HandleEndOfStream()
         {
             var currentLineStringBuffer = lineBuilder.ToString();
 
-            // if (VRChatLogEntity.LogRegex.IsMatch(currentLineStringBuffer))
-            // {
-            //     lineBuilder.Clear();
-            //     return VRChatLogEntity.Parse(currentLineStringBuffer);
-            // }
+            if (VRChatLogEntity.LogRegex.IsMatch(currentLineStringBuffer))
+            {
+                lineBuilder.Clear();
+                return VRChatLogEntity.Parse(currentLineStringBuffer);
+            }
 
             var currentLogEntityStringBuffer =
                 _logEntityStringBuilder +
