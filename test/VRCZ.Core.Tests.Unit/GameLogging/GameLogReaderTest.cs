@@ -96,77 +96,77 @@ public class GameLogReaderTest
     }
 
     [Fact]
-    public void Read_SingleLineEntities_ShouldParseCorrectly()
+    public async Task Read_SingleLineEntities_ShouldParseCorrectly()
     {
         using var stream = new MemoryStream();
-        using var writer = new StreamWriter(stream);
+        await using var writer = new StreamWriter(stream);
 
-        writer.Write(SingleLineEntityLog);
-        writer.Flush();
+        await writer.WriteAsync(SingleLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
         stream.Position = 0;
 
         using var reader = new VRChatGameLogReader(stream, jumpToEnd: false);
 
         foreach (var expectedEntity in SingleLineEntities)
         {
-            var entity = reader.Read();
+            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
             Assert.Equal(expectedEntity, entity);
         }
     }
 
     [Fact]
-    public void Read_SingleLineEntitiesWithoutLastEmptyLine_ShouldParseCorrectly()
+    public async Task Read_SingleLineEntitiesWithoutLastEmptyLine_ShouldParseCorrectly()
     {
         using var stream = new MemoryStream();
-        using var writer = new StreamWriter(stream);
+        await using var writer = new StreamWriter(stream);
 
-        writer.Write(SingleLineEntityLogWithoutLastEmptyLine);
-        writer.Flush();
+        await writer.WriteAsync(SingleLineEntityLogWithoutLastEmptyLine);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
         stream.Position = 0;
 
         using var reader = new VRChatGameLogReader(stream, jumpToEnd: false);
 
         foreach (var expectedEntity in SingleLineEntities)
         {
-            var entity = reader.Read();
+            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
             Assert.Equal(expectedEntity, entity);
         }
     }
 
     [Fact]
-    public void Read_MultiLineEntities_ShouldParseCorrectly()
+    public async Task Read_MultiLineEntities_ShouldParseCorrectly()
     {
         using var stream = new MemoryStream();
-        using var writer = new StreamWriter(stream);
+        await using var writer = new StreamWriter(stream);
 
-        writer.Write(MultiLineEntityLog);
-        writer.Flush();
+        await writer.WriteAsync(MultiLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
         stream.Position = 0;
 
         using var reader = new VRChatGameLogReader(stream, jumpToEnd: false);
 
         foreach (var expectedEntity in MultiLineEntities)
         {
-            var entity = reader.Read();
+            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
             Assert.Equal(expectedEntity, entity);
         }
     }
 
     [Fact]
-    public void Read_MultiLineEntitiesWithoutLastEmptyLine_ShouldParseCorrectly()
+    public async Task Read_MultiLineEntitiesWithoutLastEmptyLine_ShouldParseCorrectly()
     {
         using var stream = new MemoryStream();
-        using var writer = new StreamWriter(stream);
+        await using var writer = new StreamWriter(stream);
 
-        writer.Write(MultiLineEntityLogWithoutLastEmptyLine);
-        writer.Flush();
+        await writer.WriteAsync(MultiLineEntityLogWithoutLastEmptyLine);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
         stream.Position = 0;
 
         using var reader = new VRChatGameLogReader(stream, jumpToEnd: false);
 
         foreach (var expectedEntity in MultiLineEntities)
         {
-            var entity = reader.Read();
+            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
             Assert.Equal(expectedEntity, entity);
         }
     }
