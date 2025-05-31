@@ -1,4 +1,5 @@
-﻿using Microsoft.Kiota.Abstractions;
+﻿using System.Text;
+using Microsoft.Kiota.Abstractions;
 using VRCZ.Core.GameLogging;
 using VRCZ.Core.Models.VRChat.Logging;
 
@@ -238,6 +239,62 @@ public class GameLogReaderTest
             var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
             Assert.Equal(expectedEntity, entity);
         }
+    }
+
+    [Fact(Timeout = 5000)]
+    public async Task Read_JumpToEnd_InSingleReadCall_ShouldParseCorrectly()
+    {
+        // use MemoryStream will cause a race condition, so use FileStream instead
+        var tempLogFilePath = Path.GetTempFileName();
+
+        await using var tempLogFileStreamToWrite = File.Open(tempLogFilePath, FileMode.Open, FileAccess.Write,
+            FileShare.ReadWrite | FileShare.Delete);
+        await using var tempLogFileStreamToRead = File.Open(tempLogFilePath, FileMode.Open, FileAccess.Read,
+            FileShare.ReadWrite | FileShare.Delete);
+
+        await using var writer = new StreamWriter(tempLogFileStreamToWrite);
+
+        // Write Exist Log Content To File
+        await writer.WriteAsync(SingleLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
+
+        using var reader = new VRChatGameLogReader(tempLogFileStreamToRead, jumpToEnd: true);
+
+        // Start Reader Read Operation
+        var tcs = new TaskCompletionSource();
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                foreach (var expectedEntity in MultiLineEntities)
+                {
+                    // ReSharper disable once AccessToDisposedClosure
+                    // reader.Dispose() will only be called after this task finish
+                    var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
+                    Assert.Equal(expectedEntity, entity);
+                }
+
+                tcs.SetResult();
+            }
+            catch (Exception ex)
+            {
+                tcs.SetException(ex);
+            }
+        }, TestContext.Current.CancellationToken);
+
+        // Wait for reader to jump to end
+        TestContext.Current.TestOutputHelper?.WriteLine("Wait a second to let reader jump to end");
+
+        await Task.Delay(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken);
+
+        // Write New Log Entities To File
+        TestContext.Current.TestOutputHelper?.WriteLine("Start writing MultiLineEntities to stream");
+
+        await writer.WriteAsync(MultiLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
+
+        // Wait Reader Finish Reading or Throw Exception
+        await tcs.Task;
     }
 
     [Fact(Timeout = 5000)]
