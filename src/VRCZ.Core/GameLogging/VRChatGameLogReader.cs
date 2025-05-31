@@ -15,13 +15,13 @@ public sealed class VRChatGameLogReader : IDisposable
 
     private bool _isDisposed;
 
-    private bool _jumpToEnd;
+    private bool _allowCreateLogEntity;
 
     public VRChatGameLogReader(Stream logStream, bool jumpToEnd = false)
     {
         _logStream = logStream;
         _logStreamReader = new StreamReader(logStream);
-        _jumpToEnd = jumpToEnd;
+        _allowCreateLogEntity = !jumpToEnd;
     }
 
     public async ValueTask<VRChatLogEntity> ReadAsync(CancellationToken cancellationToken = default)
@@ -38,8 +38,6 @@ public sealed class VRChatGameLogReader : IDisposable
 
         var lineBuilder = new StringBuilder();
         string? lineStringBuffer = null;
-
-        var allowCreateLogEntity = !_jumpToEnd;
 
         while (true)
         {
@@ -64,9 +62,6 @@ public sealed class VRChatGameLogReader : IDisposable
 
             if (character == -1)
             {
-                if (!allowCreateLogEntity)
-                    allowCreateLogEntity = true;
-
                 if (_isLastLoopReachEndHandled)
                     continue;
 
@@ -104,8 +99,14 @@ public sealed class VRChatGameLogReader : IDisposable
             if (!VRChatLogEntity.LogRegex.IsMatch(lineStringBuffer))
                 return null;
 
-            if (_logEntityStringBuilder.Length <= 0 || !allowCreateLogEntity)
+            if (_logEntityStringBuilder.Length <= 0)
                 return null;
+
+            if (!_allowCreateLogEntity)
+            {
+                _logEntityStringBuilder.Clear();
+                return null;
+            }
 
             var logEntity = VRChatLogEntity.Parse(_logEntityStringBuilder.ToString());
             _logEntityStringBuilder.Clear();
@@ -130,6 +131,13 @@ public sealed class VRChatGameLogReader : IDisposable
                 lineStringBuffer;
 
             _isLastLoopReachEndHandled = true;
+
+            if (!_allowCreateLogEntity)
+            {
+                _allowCreateLogEntity = true;
+                _logEntityStringBuilder.Clear();
+                return null;
+            }
 
             if (!VRChatLogEntity.LogRegex.IsMatch(currentLogEntityStringBuffer))
                 return null;
