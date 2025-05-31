@@ -1,4 +1,5 @@
-﻿using VRCZ.Core.GameLogging;
+﻿using Microsoft.Kiota.Abstractions;
+using VRCZ.Core.GameLogging;
 using VRCZ.Core.Models.VRChat.Logging;
 
 namespace VRCZ.Core.Tests.Unit.GameLogging;
@@ -171,7 +172,39 @@ public class GameLogReaderTest
         }
     }
 
-    // TODO: Stream Read Test
+    [Fact(Timeout = 1000)]
+    public async Task Read_NewLogEntityAfterEndOfStream_ShouldParseCorrectly()
+    {
+        using var stream = new MemoryStream();
+        await using var writer = new StreamWriter(stream);
+
+        await writer.WriteAsync(SingleLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
+        stream.Position = 0;
+
+        using var reader = new VRChatGameLogReader(stream, jumpToEnd: false);
+
+        foreach (var expectedEntity in SingleLineEntities)
+        {
+            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
+            Assert.Equal(expectedEntity, entity);
+        }
+
+        TestContext.Current.TestOutputHelper?.WriteLine("Write New Log Entity To Stream");
+
+        var lastStreamPosition = stream.Position;
+
+        await writer.WriteAsync(SingleLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
+
+        stream.Position = lastStreamPosition;
+
+        foreach (var expectedEntity in SingleLineEntities)
+        {
+            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
+            Assert.Equal(expectedEntity, entity);
+        }
+    }
 
     [Fact(Timeout = 5000)]
     public async Task Read_EmptyStream_CancelCancellationTokenAfterStart_ShouldOperationCanceledException()
