@@ -218,30 +218,22 @@ public class GameLogReaderTest
 
         using var reader = new VRChatGameLogReader(stream, jumpToEnd: true);
 
-        var tcs = new TaskCompletionSource();
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromMilliseconds(100));
 
-        await Task.Run(async () =>
-        {
-            await reader.ReadAsync(TestContext.Current.CancellationToken);
-        }, TestContext.Current.CancellationToken);
+        TestContext.Current.TestOutputHelper?.WriteLine("Try Jump to end");
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await reader.ReadAsync(cts.Token));
+        TestContext.Current.TestOutputHelper?.WriteLine("Jump to end completed");
+
+        var lastStreamPosition = stream.Position;
 
         await writer.WriteAsync(MultiLineEntityLog);
         await writer.FlushAsync(TestContext.Current.CancellationToken);
 
-        foreach (var expectedEntity in SingleLineEntities)
-        {
-            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
-            Assert.Equal(expectedEntity, entity);
-        }
-
-        var lastStreamPosition = stream.Position;
-
-        await writer.WriteAsync(SingleLineEntityLog);
-        await writer.FlushAsync(TestContext.Current.CancellationToken);
-
         stream.Position = lastStreamPosition;
 
-        foreach (var expectedEntity in SingleLineEntities)
+        TestContext.Current.TestOutputHelper?.WriteLine("Read MultiLineEntities after jump to end");
+        foreach (var expectedEntity in MultiLineEntities)
         {
             var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
             Assert.Equal(expectedEntity, entity);
