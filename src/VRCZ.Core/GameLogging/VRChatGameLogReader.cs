@@ -28,12 +28,13 @@ public sealed class VRChatGameLogReader : IDisposable
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        return await Task.Run(Read, cancellationToken);
+        return await Task.Run(() => ReadAsyncCore(cancellationToken), cancellationToken);
     }
 
-    public VRChatLogEntity Read()
+    private VRChatLogEntity ReadAsyncCore(CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
+        cancellationToken.ThrowIfCancellationRequested();
 
         var lineBuilder = new StringBuilder();
         string? lineStringBuffer = null;
@@ -43,6 +44,7 @@ public sealed class VRChatGameLogReader : IDisposable
         while (true)
         {
             ObjectDisposedException.ThrowIf(_isDisposed, this);
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (lineStringBuffer is not null)
             {
