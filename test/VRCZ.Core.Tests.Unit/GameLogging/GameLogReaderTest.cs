@@ -95,7 +95,7 @@ public class GameLogReaderTest
             .Aggregate((current, next) => $"{current}{Environment.NewLine}{next}");
     }
 
-    [Fact]
+    [Fact(Timeout = 1000)]
     public async Task Read_SingleLineEntities_ShouldParseCorrectly()
     {
         using var stream = new MemoryStream();
@@ -114,7 +114,7 @@ public class GameLogReaderTest
         }
     }
 
-    [Fact]
+    [Fact(Timeout = 1000)]
     public async Task Read_SingleLineEntitiesWithoutLastEmptyLine_ShouldParseCorrectly()
     {
         using var stream = new MemoryStream();
@@ -133,7 +133,7 @@ public class GameLogReaderTest
         }
     }
 
-    [Fact]
+    [Fact(Timeout = 1000)]
     public async Task Read_MultiLineEntities_ShouldParseCorrectly()
     {
         using var stream = new MemoryStream();
@@ -152,7 +152,7 @@ public class GameLogReaderTest
         }
     }
 
-    [Fact]
+    [Fact(Timeout = 1000)]
     public async Task Read_MultiLineEntitiesWithoutLastEmptyLine_ShouldParseCorrectly()
     {
         using var stream = new MemoryStream();
@@ -173,7 +173,7 @@ public class GameLogReaderTest
 
     // TODO: Stream Read Test
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task Read_EmptyStream_CancelCancellationTokenAfterStart_ShouldOperationCanceledException()
     {
         using var stream = new MemoryStream();
@@ -187,7 +187,7 @@ public class GameLogReaderTest
             await reader.ReadAsync(cts.Token));
     }
 
-    [Fact]
+    [Fact(Timeout = 1000)]
     public async Task Read_EmptyStream_CancelCancellationTokenBeforeStart_ShouldOperationCanceledException()
     {
         using var stream = new MemoryStream();
@@ -201,7 +201,7 @@ public class GameLogReaderTest
             await reader.ReadAsync(cts.Token));
     }
 
-    [Fact]
+    [Fact(Timeout = 1000)]
     public async Task Read_ShouldThrowObjectDisposedException_WhenDisposed()
     {
         using var stream = new MemoryStream();
