@@ -206,6 +206,48 @@ public class GameLogReaderTest
         }
     }
 
+    [Fact(Timeout = 1000)]
+    public async Task Read_JumpToEnd_ShouldParseCorrectly()
+    {
+        using var stream = new MemoryStream();
+        await using var writer = new StreamWriter(stream);
+
+        await writer.WriteAsync(SingleLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
+        stream.Position = 0;
+
+        using var reader = new VRChatGameLogReader(stream, jumpToEnd: true);
+
+        var tcs = new TaskCompletionSource();
+
+        await Task.Run(async () =>
+        {
+            await reader.ReadAsync(TestContext.Current.CancellationToken);
+        }, TestContext.Current.CancellationToken);
+
+        await writer.WriteAsync(MultiLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
+
+        foreach (var expectedEntity in SingleLineEntities)
+        {
+            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
+            Assert.Equal(expectedEntity, entity);
+        }
+
+        var lastStreamPosition = stream.Position;
+
+        await writer.WriteAsync(SingleLineEntityLog);
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
+
+        stream.Position = lastStreamPosition;
+
+        foreach (var expectedEntity in SingleLineEntities)
+        {
+            var entity = await reader.ReadAsync(TestContext.Current.CancellationToken);
+            Assert.Equal(expectedEntity, entity);
+        }
+    }
+
     [Fact(Timeout = 5000)]
     public async Task Read_EmptyStream_CancelCancellationTokenAfterStart_ShouldOperationCanceledException()
     {
