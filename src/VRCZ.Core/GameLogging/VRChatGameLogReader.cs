@@ -8,7 +8,7 @@ public sealed class VRChatGameLogReader : IDisposable
     private readonly Stream _logStream;
     private readonly StreamReader _logStreamReader;
 
-    private readonly StringBuilder _logEntityStringBuilder = new ();
+    private readonly StringBuilder _logEntityStringBuilder = new();
 
     private bool _isLastLoopReachEnd;
     private bool _isLastLoopReachEndHandled;
@@ -35,6 +35,31 @@ public sealed class VRChatGameLogReader : IDisposable
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
         cancellationToken.ThrowIfCancellationRequested();
+
+        // How this mess works:
+        //
+        // During each loop, if lineStringBuffer is not empty, check is this line a log entity.
+        // If it is, create a log entity from logEntityBuffer (not lineStringBuffer) and write lineStringBuffer to logEntityBuffer.
+        // If not, just write lineStringBuffer to logEntityBuffer.
+        //
+        // Why not just create a log entity from lineStringBuffer: to handle situations when the log entity is split across multiple lines.
+        //
+        // How the end of stream is handled:
+        // (To make sure the EndOfStream was caused by the end of the log file, not file was still being written to)
+        //
+        // ## When EndOfStream first time:
+        //  Mark last loop EndOfStream:
+        //  - _isLastLoopReachEndHandled = false
+        //  - _isLastLoopReachEnd = true
+        // ## When EndOfStream second time:
+        //  If current line is a valid log entity, do nothing and continue to next loop.
+        //
+        //  If not, try to create a log entity from logEntityBuffer and lineStringBuffer,
+        //  and set flags: (which will prevent handle EndOfStream logic from running again)
+        //  - _isLastLoopReachEndHandled = true
+        //  - _isLastLoopReachEnd = true
+        //
+        // Note: if the stream have new characters after the EndOfStream, both flags will be set to false and continue to next loop.
 
         var lineBuilder = new StringBuilder();
         string? lineStringBuffer = null;
@@ -72,7 +97,7 @@ public sealed class VRChatGameLogReader : IDisposable
                     continue;
                 }
 
-                if (HandleEndOfStream() is {} logEntity)
+                if (HandleEndOfStream() is { } logEntity)
                     return logEntity;
 
                 continue;
