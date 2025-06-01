@@ -21,6 +21,7 @@
         <PackageReference Include="Irihi.Ursa" />
         <PackageReference Include="Irihi.Ursa.Themes.Semi" />
         <PackageReference Include="Semi.Avalonia" />
+        <PackageReference Include="Nlnet.Avalonia.Senior" />
         <PackageReference Include="ValueConverters.Avalonia" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks">
             <PrivateAssets>all</PrivateAssets>

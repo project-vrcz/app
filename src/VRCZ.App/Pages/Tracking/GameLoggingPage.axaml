@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:tracking="clr-namespace:VRCZ.App.ViewModels.Pages.Tracking"
              xmlns:u="https://irihi.tech/ursa"
+             xmlns:nlnet="https://www.nlnet.com/avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="tracking:GameLoggingPageViewModel"
              x:Class="VRCZ.App.Pages.Tracking.GameLoggingPage">
@@ -18,7 +19,7 @@
     </Interaction.Behaviors>
 
     <Grid ColumnDefinitions="*,Auto">
-        <ScrollViewer>
+        <nlnet:NtScrollViewer>
             <ItemsControl ItemsSource="{Binding LogEntities}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -41,7 +42,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </ScrollViewer>
+        </nlnet:NtScrollViewer>
         <ListBox Grid.Column="1" ItemsSource="{Binding LogPaths}" Width="200">
             <ListBox.ItemTemplate>
                 <DataTemplate>

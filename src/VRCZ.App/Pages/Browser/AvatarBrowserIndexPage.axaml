@@ -5,6 +5,7 @@
              xmlns:browser="clr-namespace:VRCZ.App.ViewModels.Pages.Browser"
              xmlns:entities="clr-namespace:VRCZ.App.ViewModels.Entities"
              xmlns:controls="clr-namespace:VRCZ.App.Controls"
+             xmlns:nlnet="https://www.nlnet.com/avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="browser:AvatarBrowserIndexPageViewModel"
              x:Class="VRCZ.App.Pages.Browser.AvatarBrowserIndexPage">
@@ -15,7 +16,7 @@
         </EventTriggerBehavior>
     </Interaction.Behaviors>
 
-    <ScrollViewer>
+    <nlnet:NtScrollViewer>
         <ItemsControl ItemsSource="{Binding Avatars}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -43,5 +44,5 @@
                 </DataTemplate>
             </ItemsControl.DataTemplates>
         </ItemsControl>
-    </ScrollViewer>
+    </nlnet:NtScrollViewer>
 </UserControl>

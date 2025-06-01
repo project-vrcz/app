@@ -36,6 +36,8 @@
 
         <PackageVersion Include="Semi.Avalonia" Version="11.2.1.7" />
 
+        <PackageVersion Include="Nlnet.Avalonia.Senior" Version="1.0.2" />
+
         <PackageVersion Include="Avalonia.Markup.Xaml.Loader" Version="$(AvaloniaVersion)" />
         <PackageVersion Include="HotAvalonia" Version="3.0.0" />
         <PackageVersion Include="MonoMod.RuntimeDetour" Version="25.2.3" />

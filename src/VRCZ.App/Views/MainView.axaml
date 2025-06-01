@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:VRCZ.App.Converters"
              xmlns:friendsPanel="clr-namespace:VRCZ.App.ViewModels.FriendsPanel"
              xmlns:controls="clr-namespace:VRCZ.App.Controls"
+             xmlns:nlnet="https://www.nlnet.com/avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="mainView:MainViewModel"
              x:Class="VRCZ.App.Views.MainView">
@@ -128,7 +129,7 @@
                     CornerRadius="0"
                     Theme="{DynamicResource CardBorder}"
                     IsVisible="{Binding CurrentPage.FullPage, Converter={StaticResource InverseBoolConverter}, FallbackValue=true}">
-                <ScrollViewer>
+                <nlnet:NtScrollViewer>
                     <ItemsControl ItemsSource="{Binding Friends.Friends}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -182,7 +183,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </ScrollViewer>
+                </nlnet:NtScrollViewer>
             </Border>
         </Grid>
     </Grid>

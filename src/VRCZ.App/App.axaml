@@ -4,6 +4,7 @@
              xmlns:u-semi="https://irihi.tech/ursa/themes/semi"
              xmlns:viewModels="clr-namespace:VRCZ.App.ViewModels"
              xmlns:app="clr-namespace:VRCZ.App"
+             xmlns:nlnet="https://www.nlnet.com/avalonia"
              x:Class="VRCZ.App.App"
              x:DataType="viewModels:TrayMenuViewModel"
              RequestedThemeVariant="Default">
@@ -16,7 +17,20 @@
         <semi:SemiTheme Locale="zh-CN" />
         <u-semi:SemiTheme Locale="zh-CN" />
         <semi:SemiPopupAnimations/>
+
+        <!-- TODO: Make smooth scroll optional -->
+        <Style Selector="nlnet|NtScrollViewer">
+            <Setter Property="SmoothScrollingStep" Value="350" />
+        </Style>
     </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Nlnet.Avalonia.Senior/Assets/Themes.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 
     <TrayIcon.Icons>
         <TrayIcons>
