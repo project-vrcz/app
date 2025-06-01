@@ -9,6 +9,7 @@
              xmlns:friendsPanel="clr-namespace:VRCZ.App.ViewModels.FriendsPanel"
              xmlns:controls="clr-namespace:VRCZ.App.Controls"
              xmlns:nlnet="https://www.nlnet.com/avalonia"
+             xmlns:entities="clr-namespace:VRCZ.App.ViewModels.Entities"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="mainView:MainViewModel"
              x:Class="VRCZ.App.Views.MainView">
@@ -137,18 +138,15 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="friendsPanel:FriendItemViewModel">
+                            <DataTemplate>
                                 <Grid ColumnDefinitions="Auto,*" Margin="0,2">
-                                    <u:Avatar controls:AsyncImageLoader.Source="{Binding UserAvatarUrl}"
+                                    <u:Avatar controls:AsyncImageLoader.Source="{Binding UserIconUrl}"
                                               RenderOptions.BitmapInterpolationMode="LowQuality">
                                         <u:Avatar.Styles>
                                             <Style Selector="Image">
                                                 <Setter Property="Stretch" Value="UniformToFill" />
                                             </Style>
                                         </u:Avatar.Styles>
-                                        <u:Avatar.Source>
-
-                                        </u:Avatar.Source>
                                     </u:Avatar>
                                     <StackPanel Grid.Column="1" Margin="5">
                                         <Interaction.Behaviors>
@@ -167,14 +165,14 @@
                                             <TextBlock FontWeight="Bold" Text="{Binding User.DisplayName}" />
                                         </StackPanel>
                                         <TextBlock TextWrapping="Wrap"
-                                                   IsVisible="{Binding !Instance, Converter={StaticResource NullToBoolConverter}}">
+                                                   IsVisible="{Binding !LocationInstance, Converter={StaticResource NullToBoolConverter}}">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0}#{1} ({2}/{3}) ({4})">
-                                                    <Binding Path="World.Name" FallbackValue="Offline" />
-                                                    <Binding Path="Instance.Name" FallbackValue="Offline" />
-                                                    <Binding Path="Instance.NUsers" />
-                                                    <Binding Path="Instance.Capacity" />
-                                                    <Binding Path="Instance.Type" />
+                                                    <Binding Path="LocationWorld.Name" FallbackValue="Offline" />
+                                                    <Binding Path="LocationInstance.Name" FallbackValue="Offline" />
+                                                    <Binding Path="LocationInstance.NUsers" />
+                                                    <Binding Path="LocationInstance.Capacity" />
+                                                    <Binding Path="LocationInstance.Type" />
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>

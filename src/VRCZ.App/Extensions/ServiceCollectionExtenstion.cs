@@ -43,6 +43,9 @@ public static class ServiceCollectionExtenstion
         serviceCollection.AddTransient<AvatarLocalFavoritesFolderPageViewModelFactory>();
 
         serviceCollection.AddTransient<AvatarViewModelFactory>();
+        serviceCollection.AddTransient<LimitedUserViewModelFactory>();
+        serviceCollection.AddTransient<FriendUserViewModelFactory>();
+
         serviceCollection.AddTransient<AvatarFavoritesFolderViewModelFactory>();
 
         serviceCollection.AddTransient<AddAvatarToFavoritesDialogViewModelFactory>();
