@@ -9,13 +9,14 @@ using VRCZ.App.ViewModels.Dialogs;
 using VRCZ.App.ViewModels.Views.Dialogs;
 using VRCZ.App.Views.Dialogs;
 using VRCZ.Core.Services;
+using VRCZ.Core.Services.Profile;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.App.ViewModels.Views;
 
 public partial class ProfileSelectionViewModel(
     UserProfileService userProfileService,
-    ManagedUserProfileService managedUserProfileService,
+    UserProfileLifetimeService userProfileLifetimeService,
     VRChatAuthService vrchatAuthService,
     WeakReferenceMessenger weakReferenceMessenger,
     IServiceProvider serviceProvider) : ViewModelBase
@@ -31,7 +32,7 @@ public partial class ProfileSelectionViewModel(
 
         Profiles = profiles
             .Select(profile =>
-                new UserProfileItemViewModel(profile, managedUserProfileService,
+                new UserProfileItemViewModel(profile, userProfileLifetimeService,
                     weakReferenceMessenger, HandleTwoFactor))
             .ToArray();
 

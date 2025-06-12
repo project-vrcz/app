@@ -7,6 +7,7 @@ using VRCZ.App.Views.Dialogs;
 using VRCZ.App.Views.Dialogs.Profile;
 using VRCZ.Core.Models;
 using VRCZ.Core.Services;
+using VRCZ.Core.Services.Profile;
 using VRCZ.VRChatApi.Generated;
 using VRCZ.VRChatApi.Generated.Models;
 
@@ -24,15 +25,12 @@ public partial class CreateProfileDialogViewModel : ViewModelBase
     public partial TwoFactorRequired_requiresTwoFactorAuth[] Available2FAMethods { get; private set; } = [];
 
     private readonly VRChatAuthService _vrchatAuthService;
-    private readonly VRChatApiClient _vrchatApiClient;
-    private readonly ManagedUserProfileService _managedUserProfileService;
+    private readonly UserProfileLifetimeService _userProfileLifetimeService;
 
-    public CreateProfileDialogViewModel(VRChatAuthService vrchatAuthService, VRChatApiClient vrchatApiClient,
-        ManagedUserProfileService managedUserProfileService)
+    public CreateProfileDialogViewModel(VRChatAuthService vrchatAuthService, UserProfileLifetimeService userProfileLifetimeService)
     {
         _vrchatAuthService = vrchatAuthService;
-        _vrchatApiClient = vrchatApiClient;
-        _managedUserProfileService = managedUserProfileService;
+        _userProfileLifetimeService = userProfileLifetimeService;
 
         CurrentView = new ProfileDialogLoginView
         {
@@ -81,11 +79,7 @@ public partial class CreateProfileDialogViewModel : ViewModelBase
     {
         await _vrchatAuthService.VerifyTwoFactorAsync(code, method);
 
-        var user = await _vrchatApiClient.Auth.User.GetAsUserGetResponseAsync();
-
-        await MessageBox.ShowAsync($"[{user?.CurrentUser?.Id}] {user?.CurrentUser?.DisplayName}", "Login Success");
-
-        await _vrchatAuthService.CreateProfileForCurrentAccountAsync(Password);
-        // await _managedUserProfileService.LoadProfileAsync();
+        var profileId = await _userProfileLifetimeService.CreateProfileFromCurrentAsync(Password);
+        await _userProfileLifetimeService.LoadProfileAsync(profileId);
     }
 }

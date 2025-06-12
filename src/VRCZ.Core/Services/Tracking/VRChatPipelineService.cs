@@ -12,13 +12,14 @@ using VRCZ.Core.Messages;
 using VRCZ.Core.Models;
 using VRCZ.Core.Models.VRChat.WebSocket;
 using VRCZ.Core.Models.VRChat.WebSocket.Payload;
+using VRCZ.Core.Services.Profile;
 using VRCZ.VRChatApi.Generated.Models;
 
 namespace VRCZ.Core.Services.Tracking;
 
 public class VRChatPipelineService(
     HttpClient httpClient,
-    VRChatAuthService vrchatAuthService,
+    CurrentUserProfileService currentUserProfileService,
     MessengerService messengerService,
     ILogger<VRChatPipelineService> logger)
 {
@@ -50,7 +51,7 @@ public class VRChatPipelineService(
     {
         logger.LogInformation("Requesting Pipeline WebSocket connection");
 
-        var authToken = vrchatAuthService.GetAuthCookie();
+        var authToken = currentUserProfileService.GetAuthCookie();
 
         if (authToken is null)
             throw new InvalidOperationException("Auth token is null");

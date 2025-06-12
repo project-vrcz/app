@@ -5,36 +5,29 @@ using VRCZ.App.ViewMessages;
 using VRCZ.App.ViewModels.Views;
 using VRCZ.App.ViewModels.Views.MainView;
 using VRCZ.Core.Services;
+using VRCZ.Core.Services.Profile;
 
 namespace VRCZ.App.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty] private ViewModelBase _currentView;
+    [ObservableProperty]
+    public partial ViewModelBase CurrentView { get; private set; }
 
-    public MainWindowViewModel(UserProfileService userProfileService, IServiceProvider serviceProvider,
-        WeakReferenceMessenger weakReferenceMessenger)
+    public MainWindowViewModel(CurrentUserProfileService currentUserProfileService, IServiceProvider serviceProvider)
     {
-        CurrentView = userProfileService.IsProfileLoaded
+        CurrentView = currentUserProfileService.IsProfileLoaded
             ? serviceProvider.GetRequiredService<MainViewModel>()
             : serviceProvider.GetRequiredService<ProfileSelectionViewModel>();
 
-        userProfileService.ProfileChanged += (_, _) =>
+        currentUserProfileService.ProfileLoaded += (_, _) =>
         {
-            if (userProfileService.IsProfileLoaded || CurrentView is ProfileSelectionViewModel)
-            {
-                return;
-            }
-
-            CurrentView = serviceProvider.GetRequiredService<ProfileSelectionViewModel>();
+            CurrentView = serviceProvider.GetRequiredService<MainViewModel>();
         };
 
-        weakReferenceMessenger.Register<ShowMainViewMessage>(this, (_, _) =>
+        currentUserProfileService.ProfileUnloading += (_, _) =>
         {
-            if (!userProfileService.IsProfileLoaded)
-                return;
-
-            CurrentView = serviceProvider.GetRequiredService<MainViewModel>();
-        });
+            CurrentView = serviceProvider.GetRequiredService<ProfileSelectionViewModel>();
+        };
     }
 }

@@ -5,6 +5,7 @@ using VRCZ.Core.DbContexts;
 using VRCZ.Core.Services;
 using VRCZ.Core.Services.Database;
 using VRCZ.Core.Services.LocalFavorites;
+using VRCZ.Core.Services.Profile;
 using VRCZ.Core.Services.Tracking;
 
 namespace VRCZ.Core.Extensions;
@@ -21,7 +22,6 @@ public static class ServiceCollectionExtenstion
         services.AddSingleton<MessengerService>();
 
         services.AddSingleton<VRChatAuthService>();
-        services.AddSingleton<UserProfileService>();
 
         services.AddTransient<IConnectionStringProvider, ProfileConnectionStringProvider>();
         services.AddDbContext<AppDbContext>();
@@ -35,7 +35,7 @@ public static class ServiceCollectionExtenstion
             })
             .ConfigurePrimaryHttpMessageHandler(servicesProvider => new SocketsHttpHandler
             {
-                CookieContainer = servicesProvider.GetRequiredService<UserProfileService>().CookieContainer,
+                CookieContainer = servicesProvider.GetRequiredService<CurrentUserProfileService>().CookieContainer,
                 UseCookies = true,
                 PooledConnectionLifetime = TimeSpan.FromMinutes(2)
             })
@@ -56,9 +56,12 @@ public static class ServiceCollectionExtenstion
                 PooledConnectionLifetime = TimeSpan.FromMinutes(2),
             });
 
-        services.AddHostedService<UserProfileHostService>();
+        // Profile
+        services.AddSingleton<CurrentUserProfileService>();
+        services.AddTransient<UserProfileLifetimeService>();
 
-        services.AddTransient<ManagedUserProfileService>();
+        services.AddTransient<UserProfileService>();
+        services.AddHostedService<UserProfileLifetimeHostService>();
 
         services.AddSingleton<VRChatTrackedEntitiesService>();
 
