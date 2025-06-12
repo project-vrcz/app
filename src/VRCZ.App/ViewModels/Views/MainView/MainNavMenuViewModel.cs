@@ -23,22 +23,22 @@ public partial class MainNavMenuViewModel : ViewModelBase
         TopItems =
         [
             new TopNavMenuItemViewModel("Home", "SemiIconHome", SetMenuItems, [
-                new NavMenuItemViewModel("Dashboard", "SemiIconCommand", Navigate, typeof(HomeViewModel),
+                new NavMenuItemViewModel("Dashboard", "SemiIconCommand", Navigate, typeof(HomePageViewModel),
                     isDefault: true),
                 new NavMenuItemViewModel("Tracking", isSeparator: true),
-                new NavMenuItemViewModel("Event Recorder", "SemiIconMapPin", Navigate, typeof(HomeViewModel)),
-                new NavMenuItemViewModel("Gameplay History", "SemiIconAlignLeft", Navigate, typeof(HomeViewModel)),
+                new NavMenuItemViewModel("Event Recorder", "SemiIconMapPin", Navigate, typeof(HomePageViewModel)),
+                new NavMenuItemViewModel("Gameplay History", "SemiIconAlignLeft", Navigate, typeof(HomePageViewModel)),
                 new NavMenuItemViewModel("Game Logging", "SemiIconFile", Navigate, typeof(GameLoggingPageViewModel)),
                 new NavMenuItemViewModel("My", isSeparator: true),
                 new NavMenuItemViewModel("Avatars", "SemiIconUserCircle", Navigate, typeof(MyAvatarPageViewModel)),
-                new NavMenuItemViewModel("Worlds", "SemiIconGlobe", Navigate, typeof(HomeViewModel)),
-                new NavMenuItemViewModel("Friends", "SemiIconUserGroup", Navigate, typeof(HomeViewModel)),
-                new NavMenuItemViewModel("Groups", "SemiIconApartment", Navigate, typeof(HomeViewModel))
+                new NavMenuItemViewModel("Worlds", "SemiIconGlobe", Navigate, typeof(HomePageViewModel)),
+                new NavMenuItemViewModel("Friends", "SemiIconUserGroup", Navigate, typeof(HomePageViewModel)),
+                new NavMenuItemViewModel("Groups", "SemiIconApartment", Navigate, typeof(HomePageViewModel))
             ], true),
             new TopNavMenuItemViewModel("Browser", "SemiIconHelm", SetMenuItems, [
-                new NavMenuItemViewModel("Worlds", "SemiIconGlobe", Navigate, typeof(HomeViewModel), isDefault: true),
+                new NavMenuItemViewModel("Worlds", "SemiIconGlobe", Navigate, typeof(HomePageViewModel), isDefault: true),
                 new NavMenuItemViewModel("Avatars", "SemiIconUserCircle", Navigate, typeof(AvatarBrowserIndexPageViewModel)),
-                new NavMenuItemViewModel("Groups", "SemiIconApartment", Navigate, typeof(HomeViewModel)),
+                new NavMenuItemViewModel("Groups", "SemiIconApartment", Navigate, typeof(HomePageViewModel)),
             ]),
             new TopNavMenuItemViewModel("Tools", "SemiIconWrench", SetMenuItems, [])
         ];

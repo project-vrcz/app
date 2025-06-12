@@ -51,7 +51,7 @@ public class App : Application
 
     public override void Initialize()
     {
-        ViewLocator.Register<HomeViewModel, HomePage>();
+        ViewLocator.Register<HomePageViewModel, HomePage>();
         ViewLocator.Register<MyAvatarPageViewModel, MyAvatarPage>();
         ViewLocator.Register<AvatarBrowserIndexPageViewModel, AvatarBrowserIndexPage>();
         ViewLocator.Register<AvatarPageViewModel, AvatarPage>();

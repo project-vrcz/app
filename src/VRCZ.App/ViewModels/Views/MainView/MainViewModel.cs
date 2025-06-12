@@ -51,6 +51,6 @@ public partial class MainViewModel : ViewModelBase, INavigationHost
     [RelayCommand]
     private void GoHome()
     {
-        _navigationService.Navigate(new HomeViewModel());
+        _navigationService.Navigate(new HomePageViewModel());
     }
 }

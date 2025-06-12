@@ -22,25 +22,28 @@ public static class ServiceCollectionExtenstion
     public static IServiceCollection AddVRCZApp(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton<AppWebImageLoader>();
-
         serviceCollection.AddSingleton<NavigationService>();
+        serviceCollection.AddHostedService<TrackedEntitiesMessengerService>();
+        serviceCollection.AddSingleton<WeakReferenceMessenger>();
 
-        serviceCollection.AddSingleton<TrayMenuViewModel>();
-        serviceCollection.AddTransient<MainViewModel>();
-        serviceCollection.AddTransient<ProfileSelectionViewModel>();
-        serviceCollection.AddTransient<CreateProfileDialogViewModel>();
-        serviceCollection.AddTransient<FriendsPanelViewModel>();
         serviceCollection.AddSingleton<MainWindowViewModel>();
 
+        #region Controls
+
+        serviceCollection.AddSingleton<TrayMenuViewModel>();
+        serviceCollection.AddTransient<FriendsPanelViewModel>();
         serviceCollection.AddTransient<MainNavMenuViewModel>();
-        serviceCollection.AddTransient<HomeViewModel>();
 
-        serviceCollection.AddTransient<MyAvatarPageViewModel>();
-        serviceCollection.AddTransient<AvatarBrowserIndexPageViewModel>();
+        #endregion
 
-        serviceCollection.AddTransient<GameLoggingPageViewModel>();
+        #region MainWindow Views
 
-        serviceCollection.AddTransient<AvatarLocalFavoritesFolderPageViewModelFactory>();
+        serviceCollection.AddTransient<ProfileSelectionViewModel>();
+        serviceCollection.AddTransient<MainViewModel>();
+
+        #endregion
+
+        #region Entities
 
         serviceCollection.AddTransient<AvatarViewModelFactory>();
         serviceCollection.AddTransient<LimitedUserViewModelFactory>();
@@ -48,11 +51,31 @@ public static class ServiceCollectionExtenstion
 
         serviceCollection.AddTransient<AvatarFavoritesFolderViewModelFactory>();
 
+        #endregion
+
+        #region Dialogs
+
+        serviceCollection.AddTransient<CreateProfileDialogViewModel>();
         serviceCollection.AddTransient<AddAvatarToFavoritesDialogViewModelFactory>();
 
-        serviceCollection.AddSingleton<WeakReferenceMessenger>();
+        #endregion
 
-        serviceCollection.AddHostedService<TrackedEntitiesMessengerService>();
+        #region Pages
+
+        // Home
+        serviceCollection.AddTransient<HomePageViewModel>();
+
+        // Home -> Tracking
+        serviceCollection.AddTransient<GameLoggingPageViewModel>();
+
+        // Home -> My
+        serviceCollection.AddTransient<MyAvatarPageViewModel>();
+        serviceCollection.AddTransient<AvatarLocalFavoritesFolderPageViewModelFactory>();
+
+        // Browser
+        serviceCollection.AddTransient<AvatarBrowserIndexPageViewModel>();
+
+        #endregion
 
         return serviceCollection;
     }

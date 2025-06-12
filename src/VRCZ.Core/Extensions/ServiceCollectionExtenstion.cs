@@ -56,18 +56,23 @@ public static class ServiceCollectionExtenstion
                 PooledConnectionLifetime = TimeSpan.FromMinutes(2),
             });
 
-        // Profile
+        #region Profile
+
         services.AddSingleton<CurrentUserProfileService>();
         services.AddTransient<UserProfileLifetimeService>();
-
-        services.AddTransient<UserProfileService>();
         services.AddHostedService<UserProfileLifetimeHostService>();
 
+        services.AddTransient<UserProfileService>();
+
+        #endregion
+
+        #region Tracking
+
         services.AddSingleton<VRChatTrackedEntitiesService>();
-
         services.AddTransient<AvatarLocalFavoritesService>();
-
         services.AddTransient<VRChatLoggingService>();
+
+        #endregion
 
         return services;
     }
