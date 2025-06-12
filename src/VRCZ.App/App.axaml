@@ -3,15 +3,10 @@
              xmlns:semi="https://irihi.tech/semi"
              xmlns:u-semi="https://irihi.tech/ursa/themes/semi"
              xmlns:viewModels="clr-namespace:VRCZ.App.ViewModels"
-             xmlns:app="clr-namespace:VRCZ.App"
              xmlns:nlnet="https://www.nlnet.com/avalonia"
              x:Class="VRCZ.App.App"
              x:DataType="viewModels:TrayMenuViewModel"
              RequestedThemeVariant="Default">
-
-    <Application.DataTemplates>
-        <app:ViewLocator />
-    </Application.DataTemplates>
 
     <Application.Styles>
         <semi:SemiTheme Locale="zh-CN" />

@@ -10,6 +10,7 @@
              xmlns:controls="clr-namespace:VRCZ.App.Controls"
              xmlns:nlnet="https://www.nlnet.com/avalonia"
              xmlns:entities="clr-namespace:VRCZ.App.ViewModels.Entities"
+             xmlns:app="clr-namespace:VRCZ.App"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="mainView:MainViewModel"
              x:Class="VRCZ.App.Views.MainView">
@@ -123,7 +124,11 @@
                     </u:NavMenu.HeaderTemplate>
                 </u:NavMenu>
             </Border>
-            <TransitioningContentControl Content="{Binding CurrentPage}" Grid.Column="1" />
+            <TransitioningContentControl Content="{Binding CurrentPage}" Grid.Column="1">
+                <TransitioningContentControl.DataTemplates>
+                    <app:ViewLocator />
+                </TransitioningContentControl.DataTemplates>
+            </TransitioningContentControl>
             <Border Grid.Column="2"
                     Padding="8 4"
                     Margin="0"
