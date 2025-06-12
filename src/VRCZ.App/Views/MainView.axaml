@@ -6,10 +6,8 @@
              xmlns:u="https://irihi.tech/ursa"
              xmlns:mainView="clr-namespace:VRCZ.App.ViewModels.Views.MainView"
              xmlns:converters="clr-namespace:VRCZ.App.Converters"
-             xmlns:friendsPanel="clr-namespace:VRCZ.App.ViewModels.FriendsPanel"
              xmlns:controls="clr-namespace:VRCZ.App.Controls"
              xmlns:nlnet="https://www.nlnet.com/avalonia"
-             xmlns:entities="clr-namespace:VRCZ.App.ViewModels.Entities"
              xmlns:app="clr-namespace:VRCZ.App"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="mainView:MainViewModel"
@@ -21,121 +19,144 @@
         <converters:KeyToResourceConverter x:Key="KeyToResourceConverter" />
     </UserControl.Resources>
 
-    <Grid RowDefinitions="Auto,*">
-        <Border
-            Height="60"
-            Margin="0"
-            Padding="12,0"
-            CornerRadius="0"
-            Background="Transparent"
-            Theme="{DynamicResource CardBorder}">
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <Grid.Styles>
-                    <Style Selector="RadioButton:checked">
-                        <Setter Property="Foreground" Value="{DynamicResource SemiColorPrimary}" />
-                    </Style>
-                    <Style Selector="RadioButton">
-                        <Setter Property="FontWeight" Value="Bold" />
-                        <Setter Property="Foreground" Value="{DynamicResource SemiColorTertiary}" />
-                    </Style>
-                </Grid.Styles>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <ItemsControl ItemsSource="{Binding NavMenu.TopItems}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="mainView:TopNavMenuItemViewModel">
-                                <RadioButton Theme="{DynamicResource PureCardRadioButton}" GroupName="TopNavMenu"
-                                             IsChecked="{Binding IsDefault, Mode=OneTime}"
-                                             Command="{Binding NavigateCommand}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <u:TwoTonePathIcon Width="{DynamicResource SemiWidthIconLarge}"
-                                                           Data="{Binding Icon, Converter={StaticResource KeyToResourceConverter}}"
-                                                           Margin="0,0,10,0"
-                                                           VerticalAlignment="Center"
-                                                           ActiveForeground="{DynamicResource SemiColorPrimary}"
-                                                           ActiveStrokeBrush="{DynamicResource SemiColorPrimary}"
-                                                           Foreground="{DynamicResource SemiColorTertiary}"
-                                                           StrokeBrush="{DynamicResource SemiColorTertiary}"
-                                                           IsActive="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RadioButton}, Path=IsChecked, Mode=OneWay}" />
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding Header}" />
-                                    </StackPanel>
-                                </RadioButton>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <u:Avatar Classes="Small" />
-                    <TextBlock Text="{Binding LoggedInUser.DisplayName}" />
-                    <TextBlock Text="{Binding LoggedInUser.StatusDescription}" />
-                </StackPanel>
-            </Grid>
-        </Border>
-        <Grid Grid.Row="1" ColumnDefinitions="Auto,*,350">
+    <Grid ColumnDefinitions="*,320">
+        <Grid RowDefinitions="Auto,*">
             <Border
-                Padding="8"
+                Height="60"
                 Margin="0"
+                Padding="12,0"
                 CornerRadius="0"
-                Theme="{DynamicResource CardBorder}"
-                IsVisible="{Binding CurrentPage.FullPage, Converter={StaticResource InverseBoolConverter}, FallbackValue=true}">
-                <u:NavMenu CanToggle="true" ExpandWidth="250" Padding="0 2"
-                           CommandBinding="{Binding NavigateCommand, DataType=mainView:NavMenuItemViewModel}"
-                           IconBinding="{Binding Icon, DataType=mainView:NavMenuItemViewModel}"
-                           ItemsSource="{Binding NavMenu.Items}">
-                    <u:NavMenu.Styles>
-                        <Style Selector="u|NavMenuItem > Grid > Border">
-                            <Setter Property="Height" Value="40" />
-                        </Style>
-                        <Style Selector="u|NavMenuItem:selected > TextBlock">
+                Background="Transparent"
+                Theme="{DynamicResource CardBorder}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Grid.Styles>
+                        <Style Selector="RadioButton:checked">
                             <Setter Property="Foreground" Value="{DynamicResource SemiColorPrimary}" />
                         </Style>
-                        <Style Selector="u|NavMenuItem > TextBlock">
+                        <Style Selector="RadioButton">
                             <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Foreground" Value="{DynamicResource SemiColorTertiary}" />
                         </Style>
-                        <Style Selector="ContentPresenter#PART_HeaderPresenter">
-                            <Setter Property="VerticalContentAlignment" Value="Center" />
-                        </Style>
-                        <Style x:DataType="mainView:NavMenuItemViewModel" Selector="u|NavMenuItem">
-                            <Setter Property="IsSeparator" Value="{Binding IsSeparator}" />
-                            <Setter Property="IsSelected" Value="{Binding IsDefault, Mode=OneTime}" />
-                            <Setter Property="IsHighlighted" Value="{Binding IsDefault, Mode=OneTime}" />
-                        </Style>
-                    </u:NavMenu.Styles>
-                    <u:NavMenu.IconTemplate>
-                        <DataTemplate x:DataType="x:String">
-                            <u:TwoTonePathIcon Width="{DynamicResource SemiWidthIconLarge}"
-                                               Data="{Binding Converter={StaticResource KeyToResourceConverter}}"
-                                               Margin="5,0"
-                                               ActiveForeground="{DynamicResource SemiColorPrimary}"
-                                               ActiveStrokeBrush="{DynamicResource SemiColorPrimary}"
-                                               Foreground="{DynamicResource SemiColorTertiary}"
-                                               StrokeBrush="{DynamicResource SemiColorTertiary}"
-                                               IsActive="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=u:NavMenuItem}, Path=IsHighlighted, Mode=OneWay}" />
-                        </DataTemplate>
-                    </u:NavMenu.IconTemplate>
-                    <u:NavMenu.HeaderTemplate>
-                        <DataTemplate DataType="mainView:NavMenuItemViewModel">
-                            <TextBlock Text="{Binding Header}" />
-                        </DataTemplate>
-                    </u:NavMenu.HeaderTemplate>
-                </u:NavMenu>
+                    </Grid.Styles>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <ItemsControl ItemsSource="{Binding NavMenu.TopItems}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="mainView:TopNavMenuItemViewModel">
+                                    <RadioButton Theme="{DynamicResource PureCardRadioButton}" GroupName="TopNavMenu"
+                                                 IsChecked="{Binding IsDefault, Mode=OneTime}"
+                                                 Command="{Binding NavigateCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <u:TwoTonePathIcon Width="{DynamicResource SemiWidthIconLarge}"
+                                                               Data="{Binding Icon, Converter={StaticResource KeyToResourceConverter}}"
+                                                               Margin="0,0,10,0"
+                                                               VerticalAlignment="Center"
+                                                               ActiveForeground="{DynamicResource SemiColorPrimary}"
+                                                               ActiveStrokeBrush="{DynamicResource SemiColorPrimary}"
+                                                               Foreground="{DynamicResource SemiColorTertiary}"
+                                                               StrokeBrush="{DynamicResource SemiColorTertiary}"
+                                                               IsActive="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RadioButton}, Path=IsChecked, Mode=OneWay}" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Header}" />
+                                        </StackPanel>
+                                    </RadioButton>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
             </Border>
-            <TransitioningContentControl Content="{Binding CurrentPage}" Grid.Column="1">
-                <TransitioningContentControl.DataTemplates>
-                    <app:ViewLocator />
-                </TransitioningContentControl.DataTemplates>
-            </TransitioningContentControl>
-            <Border Grid.Column="2"
-                    Padding="8 4"
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                <Border
+                    Padding="8"
                     Margin="0"
                     CornerRadius="0"
                     Theme="{DynamicResource CardBorder}"
                     IsVisible="{Binding CurrentPage.FullPage, Converter={StaticResource InverseBoolConverter}, FallbackValue=true}">
-                <nlnet:NtScrollViewer>
+                    <u:NavMenu CanToggle="true" ExpandWidth="250" Padding="0 2"
+                               CommandBinding="{Binding NavigateCommand, DataType=mainView:NavMenuItemViewModel}"
+                               IconBinding="{Binding Icon, DataType=mainView:NavMenuItemViewModel}"
+                               ItemsSource="{Binding NavMenu.Items}">
+                        <u:NavMenu.Styles>
+                            <Style Selector="u|NavMenuItem > Grid > Border">
+                                <Setter Property="Height" Value="40" />
+                            </Style>
+                            <Style Selector="u|NavMenuItem:selected > TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource SemiColorPrimary}" />
+                            </Style>
+                            <Style Selector="u|NavMenuItem > TextBlock">
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Style>
+                            <Style Selector="ContentPresenter#PART_HeaderPresenter">
+                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                            </Style>
+                            <Style x:DataType="mainView:NavMenuItemViewModel" Selector="u|NavMenuItem">
+                                <Setter Property="IsSeparator" Value="{Binding IsSeparator}" />
+                                <Setter Property="IsSelected" Value="{Binding IsDefault, Mode=OneTime}" />
+                                <Setter Property="IsHighlighted" Value="{Binding IsDefault, Mode=OneTime}" />
+                            </Style>
+                        </u:NavMenu.Styles>
+                        <u:NavMenu.IconTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <u:TwoTonePathIcon Width="{DynamicResource SemiWidthIconLarge}"
+                                                   Data="{Binding Converter={StaticResource KeyToResourceConverter}}"
+                                                   Margin="5,0"
+                                                   ActiveForeground="{DynamicResource SemiColorPrimary}"
+                                                   ActiveStrokeBrush="{DynamicResource SemiColorPrimary}"
+                                                   Foreground="{DynamicResource SemiColorTertiary}"
+                                                   StrokeBrush="{DynamicResource SemiColorTertiary}"
+                                                   IsActive="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=u:NavMenuItem}, Path=IsHighlighted, Mode=OneWay}" />
+                            </DataTemplate>
+                        </u:NavMenu.IconTemplate>
+                        <u:NavMenu.HeaderTemplate>
+                            <DataTemplate DataType="mainView:NavMenuItemViewModel">
+                                <TextBlock Text="{Binding Header}" />
+                            </DataTemplate>
+                        </u:NavMenu.HeaderTemplate>
+                    </u:NavMenu>
+                </Border>
+                <TransitioningContentControl Content="{Binding CurrentPage}" Grid.Column="1">
+                    <TransitioningContentControl.DataTemplates>
+                        <app:ViewLocator />
+                    </TransitioningContentControl.DataTemplates>
+                </TransitioningContentControl>
+            </Grid>
+        </Grid>
+        <Border Grid.Column="1"
+                Padding="8 0"
+                Margin="0"
+                CornerRadius="0"
+                Theme="{DynamicResource CardBorder}"
+                IsVisible="{Binding CurrentPage.FullPage, Converter={StaticResource InverseBoolConverter}, FallbackValue=true}">
+            <Grid RowDefinitions="Auto,Auto,*" RowSpacing="4">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,5,0,0" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" >
+                        <u:Avatar controls:AsyncImageLoader.Source="{Binding LoggedInUser.CurrentAvatarThumbnailImageUrl}" />
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding LoggedInUser.DisplayName}" />
+                            <TextBlock Text="{Binding LoggedInUser.StatusDescription}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <u:IconButton Icon="{StaticResource SemiIconBell}" Theme="{StaticResource BorderlessIconButton}" />
+                        <u:IconButton Icon="{StaticResource SemiIconSetting}" Theme="{StaticResource BorderlessIconButton}" />
+                    </StackPanel>
+                </Grid>
+                <Border Grid.Row="1" Theme="{StaticResource CardBorder}" Padding="4">
+                    <Grid ColumnDefinitions="100,*">
+                        <Image
+                            controls:AsyncImageLoader.Source="https://api.vrchat.cloud/api/1/image/file_af3b84ca-d786-4c89-a792-ad848440264b/69/256" />
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Japan Shrine［early summer］" />
+                            <TextBlock Text="[JP] [Public] #1244" />
+                            <TextBlock Text="24/60 Friends: 2" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <nlnet:NtScrollViewer Grid.Row="2">
                     <ItemsControl ItemsSource="{Binding Friends.Friends}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -146,13 +167,7 @@
                             <DataTemplate>
                                 <Grid ColumnDefinitions="Auto,*" Margin="0,2">
                                     <u:Avatar controls:AsyncImageLoader.Source="{Binding UserIconUrl}"
-                                              RenderOptions.BitmapInterpolationMode="LowQuality">
-                                        <u:Avatar.Styles>
-                                            <Style Selector="Image">
-                                                <Setter Property="Stretch" Value="UniformToFill" />
-                                            </Style>
-                                        </u:Avatar.Styles>
-                                    </u:Avatar>
+                                              RenderOptions.BitmapInterpolationMode="LowQuality" />
                                     <StackPanel Grid.Column="1" Margin="5">
                                         <Interaction.Behaviors>
                                             <EventTriggerBehavior EventName="Loaded">
@@ -187,7 +202,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </nlnet:NtScrollViewer>
-            </Border>
-        </Grid>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
