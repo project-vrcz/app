@@ -28,7 +28,7 @@
                 CornerRadius="0"
                 Background="Transparent"
                 Theme="{DynamicResource CardBorder}">
-                <Grid ColumnDefinitions="Auto,*,Auto">
+                <Grid ColumnDefinitions="*,Auto">
                     <Grid.Styles>
                         <Style Selector="RadioButton:checked">
                             <Setter Property="Foreground" Value="{DynamicResource SemiColorPrimary}" />
@@ -38,34 +38,41 @@
                             <Setter Property="Foreground" Value="{DynamicResource SemiColorTertiary}" />
                         </Style>
                     </Grid.Styles>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <ItemsControl ItemsSource="{Binding NavMenu.TopItems}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="mainView:TopNavMenuItemViewModel">
-                                    <RadioButton Theme="{DynamicResource PureCardRadioButton}" GroupName="TopNavMenu"
-                                                 IsChecked="{Binding IsDefault, Mode=OneTime}"
-                                                 Command="{Binding NavigateCommand}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <u:TwoTonePathIcon Width="{DynamicResource SemiWidthIconLarge}"
-                                                               Data="{Binding Icon, Converter={StaticResource KeyToResourceConverter}}"
-                                                               Margin="0,0,10,0"
-                                                               VerticalAlignment="Center"
-                                                               ActiveForeground="{DynamicResource SemiColorPrimary}"
-                                                               ActiveStrokeBrush="{DynamicResource SemiColorPrimary}"
-                                                               Foreground="{DynamicResource SemiColorTertiary}"
-                                                               StrokeBrush="{DynamicResource SemiColorTertiary}"
-                                                               IsActive="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RadioButton}, Path=IsChecked, Mode=OneWay}" />
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding Header}" />
-                                        </StackPanel>
-                                    </RadioButton>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding NavMenu.TopItems}" VerticalAlignment="Center">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="mainView:TopNavMenuItemViewModel">
+                                <RadioButton Theme="{DynamicResource PureCardRadioButton}" GroupName="TopNavMenu"
+                                             IsChecked="{Binding IsDefault, Mode=OneTime}"
+                                             Command="{Binding NavigateCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <u:TwoTonePathIcon Width="{DynamicResource SemiWidthIconLarge}"
+                                                           Data="{Binding Icon, Converter={StaticResource KeyToResourceConverter}}"
+                                                           Margin="0,0,10,0"
+                                                           VerticalAlignment="Center"
+                                                           ActiveForeground="{DynamicResource SemiColorPrimary}"
+                                                           ActiveStrokeBrush="{DynamicResource SemiColorPrimary}"
+                                                           Foreground="{DynamicResource SemiColorTertiary}"
+                                                           StrokeBrush="{DynamicResource SemiColorTertiary}"
+                                                           IsActive="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RadioButton}, Path=IsChecked, Mode=OneWay}" />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Header}" />
+                                    </StackPanel>
+                                </RadioButton>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBox Watermark="Search" Width="200">
+                            <TextBox.InnerLeftContent>
+                                <u:TwoTonePathIcon Data="{StaticResource SemiIconSearch}"
+                                                   Foreground="{DynamicResource SemiColorTertiary}"
+                                                   StrokeBrush="{DynamicResource SemiColorTertiary}"/>
+                            </TextBox.InnerLeftContent>
+                        </TextBox>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -133,16 +140,19 @@
                 IsVisible="{Binding CurrentPage.FullPage, Converter={StaticResource InverseBoolConverter}, FallbackValue=true}">
             <Grid RowDefinitions="Auto,Auto,*" RowSpacing="4">
                 <Grid ColumnDefinitions="*,Auto" Margin="0,5,0,0" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" >
-                        <u:Avatar controls:AsyncImageLoader.Source="{Binding LoggedInUser.CurrentAvatarThumbnailImageUrl}" />
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
+                        <u:Avatar
+                            controls:AsyncImageLoader.Source="{Binding LoggedInUser.CurrentAvatarThumbnailImageUrl}" />
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="{Binding LoggedInUser.DisplayName}" />
                             <TextBlock Text="{Binding LoggedInUser.StatusDescription}" />
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <u:IconButton Icon="{StaticResource SemiIconBell}" Theme="{StaticResource BorderlessIconButton}" />
-                        <u:IconButton Icon="{StaticResource SemiIconSetting}" Theme="{StaticResource BorderlessIconButton}" />
+                        <u:IconButton Icon="{StaticResource SemiIconBell}"
+                                      Theme="{StaticResource BorderlessIconButton}" />
+                        <u:IconButton Icon="{StaticResource SemiIconSetting}"
+                                      Theme="{StaticResource BorderlessIconButton}" />
                     </StackPanel>
                 </Grid>
                 <Border Grid.Row="1" Theme="{StaticResource CardBorder}" Padding="4">
