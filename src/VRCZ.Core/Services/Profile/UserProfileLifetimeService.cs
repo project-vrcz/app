@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using VRCZ.Core.Exceptions;
 using VRCZ.Core.Models;
 using VRCZ.Core.Models.VRChat;
@@ -18,7 +20,8 @@ public class UserProfileLifetimeService(
     VRChatLoggingService vrchatLoggingService,
     VRChatApiClient apiClient,
     VRChatAuthService authService,
-    DatabaseInitializeMigrateService databaseInitializeMigrateService)
+    ILogger<UserProfileLifetimeService> logger,
+    IServiceScopeFactory serviceScopeFactory)
 {
     public async Task LoadProfileAsync(string userId,
         Func<TwoFactorRequired_requiresTwoFactorAuth[], Task>? handleTwoFactorRequired = null)
@@ -26,6 +29,11 @@ public class UserProfileLifetimeService(
         try
         {
             await currentUserProfileService.LoadProfileAsync(userId);
+
+            await using var scope = serviceScopeFactory.CreateAsyncScope();
+            var databaseInitializeMigrateService =
+                scope.ServiceProvider.GetRequiredService<DatabaseInitializeMigrateService>();
+
             await databaseInitializeMigrateService.EnsureDatabaseReadyAsync();
 
             CurrentUser currentUser;
@@ -50,8 +58,10 @@ public class UserProfileLifetimeService(
             await vrchatPipelineService.ConnectAsync();
             await vrchatLoggingService.StartAsync();
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Failed to load profile for user {UserId}", userId);
+
             if (currentUserProfileService.IsProfileLoaded)
             {
                 await UnloadProfileAsync();

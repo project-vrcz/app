@@ -1,16 +1,21 @@
-﻿using VRCZ.Core.DbContexts;
+﻿using SqlSugar;
+using VRCZ.Core.Models.Entities.LocalFavorites;
+using VRCZ.Core.Models.Entities.VRChat;
 
 namespace VRCZ.Core.Services.Database;
 
-public class DatabaseInitializeMigrateService(AppDbContext appDbContext)
+public class DatabaseInitializeMigrateService(SqlSugarClient sqlSugarClient)
 {
     public async Task EnsureDatabaseReadyAsync()
     {
-#if DEBUG
-        await appDbContext.Database.EnsureCreatedAsync();
-#endif
+        await Task.Run(() =>
+        {
+            sqlSugarClient.DbMaintenance.CreateDatabase();
 
-        // TODO: Use a aot-supported way to migrate database
-        // await appDbContext.Database.MigrateAsync();
+            sqlSugarClient.CodeFirst.InitTables<AvatarEntity>();
+
+            sqlSugarClient.CodeFirst.InitTables<AvatarFavoritesFolder>();
+            sqlSugarClient.CodeFirst.InitTables<AvatarFavoritesMapping>();
+        });
     }
 }

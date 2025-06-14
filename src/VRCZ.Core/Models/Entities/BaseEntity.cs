@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using SqlSugar;
 
 namespace VRCZ.Core.Models.Entities;
 
 [ExcludeFromCodeCoverage]
 public abstract class BaseEntity : BaseEntityWithoutId
 {
-    [Key]
+    [SugarColumn(IsPrimaryKey = true)]
     public Guid Id { get; set; } = Guid.CreateVersion7();
 }
 

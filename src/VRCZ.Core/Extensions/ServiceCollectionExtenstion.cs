@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.DependencyInjection;
-using VRCZ.Core.DbContexts;
+using Microsoft.Extensions.Logging;
+using SqlSugar;
 using VRCZ.Core.Services;
 using VRCZ.Core.Services.Database;
 using VRCZ.Core.Services.LocalFavorites;
@@ -15,6 +16,8 @@ public static class ServiceCollectionExtenstion
 {
     public static IServiceCollection AddVRCZCore(this IServiceCollection services)
     {
+        StaticConfig.EnableAot = true;
+
         services.AddMemoryCache();
 
         services.AddKiotaHandlers();
@@ -23,9 +26,35 @@ public static class ServiceCollectionExtenstion
 
         services.AddSingleton<VRChatAuthService>();
 
+        #region Database (SqlSugar)
+
         services.AddTransient<IConnectionStringProvider, ProfileConnectionStringProvider>();
-        services.AddDbContext<AppDbContext>();
         services.AddTransient<DatabaseInitializeMigrateService>();
+
+        services.AddScoped<SqlSugarClient>(serviceProvider =>
+        {
+            var connectionStringProvider = serviceProvider.GetRequiredService<IConnectionStringProvider>();
+            var connectionString = connectionStringProvider.GetConnectionString();
+
+            var sqlLogger = serviceProvider.GetRequiredService<ILogger<SqlSugarClient>>();
+
+            var sqlSugar = new SqlSugarClient(new ConnectionConfig
+            {
+                DbType = DbType.Sqlite,
+                ConnectionString = connectionString,
+                IsAutoCloseConnection = true
+            }, client =>
+            {
+                client.Aop.OnLogExecuting = (sql, parms) =>
+                {
+                    sqlLogger.LogInformation("${Sql}", sql);
+                };
+            });
+
+            return sqlSugar;
+        });
+
+        #endregion
 
         services.AddTransient(serviceProvider =>
             serviceProvider.GetRequiredService<VRChatApiClientFactory>().GetClient());

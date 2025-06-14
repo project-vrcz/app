@@ -6,7 +6,6 @@
 
     <PropertyGroup>
         <AvaloniaVersion>11.3.0</AvaloniaVersion>
-        <EntityFrameworkVersion>9.0.4</EntityFrameworkVersion>
         <UrsaVersion>1.11.0</UrsaVersion>
     </PropertyGroup>
 
@@ -47,19 +46,12 @@
         <PackageVersion Include="Lemon.Hosting.AvaloniauiDesktop" Version="1.0.1-beta" />
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
 
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions"
-            Version="9.0.4" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
         <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4" />
         <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.4" />
         <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="9.0.4" />
 
-        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkVersion)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite"
-            Version="$(EntityFrameworkVersion)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design"
-            Version="$(EntityFrameworkVersion)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks"
-            Version="$(EntityFrameworkVersion)" />
+        <PackageVersion Include="SqlSugarCoreNoDrive.Aot" Version="5.1.4.186" />
 
         <PackageVersion Include="Serilog" Version="4.2.0" />
         <PackageVersion Include="Serilog.Extensions.Hosting" Version="9.0.0" />

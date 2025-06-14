@@ -23,10 +23,10 @@
         <PackageReference Include="Semi.Avalonia" />
         <PackageReference Include="Nlnet.Avalonia.Senior" />
         <PackageReference Include="ValueConverters.Avalonia" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+<!--        <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks">-->
+<!--            <PrivateAssets>all</PrivateAssets>-->
+<!--            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
+<!--        </PackageReference>-->
         <PackageReference Include="HotAvalonia" PrivateAssets="All" Publish="True" />
         <PackageReference Include="Avalonia.Markup.Xaml.Loader" PrivateAssets="All" />
         <PackageReference Include="MonoMod.RuntimeDetour" PrivateAssets="All" />

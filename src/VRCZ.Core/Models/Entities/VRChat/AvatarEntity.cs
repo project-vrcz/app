@@ -1,25 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using SqlSugar;
+#pragma warning disable CS8618
 
 namespace VRCZ.Core.Models.Entities.VRChat;
 
 [ExcludeFromCodeCoverage]
+[SugarTable]
 public class AvatarEntity : BaseEntityWithoutId
 {
-    [Key]
-    public required string Id { get; set; }
+    [SugarColumn(IsPrimaryKey = true)]
+    public string Id { get; set; }
 
-    public required string Name { get; set; }
-    public required string Description { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
 
-    public required string AuthorId { get; set; }
-    public required string AuthorName { get; set; }
+    public string AuthorId { get; set; }
+    public string AuthorName { get; set; }
 
-    public required DateTimeOffset AvatarCreatedAt { get; set; }
-    public required DateTimeOffset AvatarUpdatedAt { get; set; }
+    public DateTimeOffset AvatarCreatedAt { get; set; }
+    public DateTimeOffset AvatarUpdatedAt { get; set; }
 
-    public required string ImageUrl { get; set; }
-    public required string ThumbnailImageUrl { get; set; }
+    public string ImageUrl { get; set; }
+    public string ThumbnailImageUrl { get; set; }
 
     public string? PrimaryStyle { get; set; }
     public string? SecondaryStyle { get; set; }

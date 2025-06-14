@@ -1,25 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
-using VRCZ.Core.DbContexts;
+﻿using SqlSugar;
 using VRCZ.Core.Models.Entities.LocalFavorites;
 using VRCZ.Core.Models.Entities.VRChat;
 
 namespace VRCZ.Core.Services.LocalFavorites;
 
-public class AvatarLocalFavoritesService(AppDbContext appDbContext)
+public class AvatarLocalFavoritesService(SqlSugarClient sqlSugarClient)
 {
     public async ValueTask<AvatarFavoritesFolder[]> GetAvatarFavoritesFoldersAsync()
     {
-        return await appDbContext.AvatarFavoritesFolders
-            .AsNoTracking()
+        return await sqlSugarClient
+            .Queryable<AvatarFavoritesFolder>()
             .ToArrayAsync();
     }
 
     public async ValueTask<AvatarFavoritesFolder?> GetAvatarFavoritesFolderAsync(Guid folderId)
     {
-        return await appDbContext.AvatarFavoritesFolders
-            .AsNoTracking()
-            .Include(folder => folder.Avatars)
-            .FirstOrDefaultAsync(f => f.Id == folderId);
+        return await sqlSugarClient
+            .Queryable<AvatarFavoritesFolder>()
+            .Includes(folder => folder.Avatars)
+            .SingleAsync(folder => folder.Id == folderId);
     }
 
     public async ValueTask<AvatarFavoritesFolder> CreateAvatarFavoritesFolderAsync(string name, string description)
@@ -30,19 +29,23 @@ public class AvatarLocalFavoritesService(AppDbContext appDbContext)
             Description = description
         };
 
-        await appDbContext.AvatarFavoritesFolders.AddAsync(folder);
-        await appDbContext.SaveChangesAsync();
+        await sqlSugarClient.Insertable(folder).ExecuteCommandAsync();
 
         return folder;
     }
 
     public async Task AddAvatarToFavoritesAsync(AvatarEntity avatarEntity, Guid folderId)
     {
-        var folder = await appDbContext.AvatarFavoritesFolders.FindAsync(folderId)
-            ?? throw new InvalidOperationException("Folder not found");
+        if (!await sqlSugarClient.Queryable<AvatarFavoritesFolder>().AnyAsync(entity => entity.Id == folderId))
+            throw new InvalidOperationException("Folder not found");
 
-        folder.Avatars.Add(avatarEntity);
+        var avatar = await sqlSugarClient.Storageable(avatarEntity).ExecuteReturnEntityAsync();
+        var mapping = new AvatarFavoritesMapping
+        {
+            AvatarEntityId = avatar.Id,
+            AvatarFavoritesFolderId = folderId
+        };
 
-        await appDbContext.SaveChangesAsync();
+        await sqlSugarClient.Insertable(mapping).ExecuteCommandAsync();
     }
 }

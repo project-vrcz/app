@@ -14,7 +14,7 @@ public class ProfileConnectionStringProvider(CurrentUserProfileService userProfi
         var profileStoragePath = ProfileStorageUtils.GetUserProfileStoragePath(userProfileService.CurrentProfile.Id);
         var databasePath = Path.Combine(profileStoragePath, ProfileStorageUtils.UserProfileDatabaseFileName);
 
-        var connectionStringBuilder = new SqliteConnectionStringBuilder()
+        var connectionStringBuilder = new SqliteConnectionStringBuilder
         {
             DataSource = databasePath
         };
