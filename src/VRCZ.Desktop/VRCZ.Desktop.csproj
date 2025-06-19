@@ -38,6 +38,10 @@
         <ProjectReference Include="..\VRCZ.App\VRCZ.App.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <RdXmlFile Include="rd.xml" />
+    </ItemGroup>
+
     <PropertyGroup>
         <HotAvaloniaAutoEnable>false</HotAvaloniaAutoEnable>
     </PropertyGroup>
