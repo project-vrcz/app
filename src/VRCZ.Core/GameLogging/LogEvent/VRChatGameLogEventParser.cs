@@ -7,7 +7,9 @@ public class VRChatGameLogEventParser
 {
     public List<IVRChatGameLogEventParser> LogEventParsers { get; } = [
         new PlayerJoinLogEventParser(),
-        new PlayerLeftLogEventParser()
+        new PlayerLeftLogEventParser(),
+        new JoiningInstanceEventParser(),
+        new LeftInstanceEventParser()
     ];
 
     public VRChatGameLogEventBase? Parse(VRChatLogEntity logEntity)
