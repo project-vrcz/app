@@ -1,0 +1,33 @@
+﻿<Project>
+    <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Packages.props, $(MSBuildThisFileDirectory)..))"/>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    </PropertyGroup>
+    <ItemGroup>
+        <!--Avalonia Framekwork-->
+        <PackageVersion Include="Avalonia" Version="11.3.12"/>
+        <PackageVersion Include="Avalonia.Desktop" Version="11.3.12"/>
+        <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.12"/>
+
+        <!--Theme-->
+        <PackageVersion Include="Semi.Avalonia" Version="11.3.7.3"/>
+
+        <!--Hot Reload Support-->
+        <PackageVersion Include="HotAvalonia" Version="3.1.0" PrivateAssets="All" Publish="True"/>
+
+        <!--DevTools Support-->
+        <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.1.1"/>
+
+        <!--Mvvm-->
+        <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
+
+        <!--Serilog Logging-->
+        <PackageVersion Include="Serilog" Version="4.3.1"/>
+        <PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0"/>
+        <PackageVersion Include="Serilog.Formatting.Compact" Version="3.0.0"/>
+        <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0"/>
+        <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1"/>
+        <PackageVersion Include="Serilog.Sinks.Debug" Version="3.0.0"/>
+        <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0"/>
+    </ItemGroup>
+</Project>
