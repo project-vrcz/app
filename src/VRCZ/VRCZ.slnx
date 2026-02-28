@@ -4,6 +4,7 @@
     <Project Path="App/VRCZ.App/VRCZ.App.csproj" />
   </Folder>
   <Folder Name="/Core/">
+    <Project Path="Core/VRCZ.Core.GameLogging/VRCZ.Core.GameLogging.csproj" />
     <Project Path="Core/VRCZ.Core.Shared/VRCZ.Core.Shared.csproj" />
   </Folder>
   <Folder Name="/SolutionItems/">

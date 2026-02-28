@@ -23,14 +23,20 @@ public static class AvaloniaHostExtension
     }
 
     [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
-    public static void RunAvaloniaWaitForShutdown(this IHost host, string[] args)
+    public static void RunAvaloniaWaitForShutdown(
+        this IHost host,
+        string[] args,
+        Action<IServiceProvider, ClassicDesktopStyleApplicationLifetime>? configureLifetime = null
+    )
     {
         var lifetime = new ClassicDesktopStyleApplicationLifetime
         {
             Args = args,
-            ShutdownMode = ShutdownMode.OnExplicitShutdown
+            ShutdownMode = ShutdownMode.OnMainWindowClose
         };
+
         host.Services.GetRequiredService<AppBuilder>().SetupWithLifetime(lifetime);
+        configureLifetime?.Invoke(host.Services, lifetime);
 
         var cts = new CancellationTokenSource();
 

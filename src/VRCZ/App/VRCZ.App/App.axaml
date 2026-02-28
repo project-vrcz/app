@@ -6,5 +6,6 @@
 
     <Application.Styles>
         <semi:SemiTheme />
+        <semi:AvaloniaEditSemiTheme />
     </Application.Styles>
 </Application>

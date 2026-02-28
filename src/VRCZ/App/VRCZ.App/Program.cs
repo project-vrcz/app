@@ -1,11 +1,14 @@
 ﻿using Avalonia;
 using System;
 using HotAvalonia;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Formatting.Compact;
 using Serilog.Sinks.SystemConsole.Themes;
 using VRCZ.App.Extensions;
+using VRCZ.App.ViewModel;
+using VRCZ.Core.GameLogging.Extensions;
 using VRCZ.Core.Shared;
 
 namespace VRCZ.App;
@@ -48,15 +51,26 @@ class Program
 
             builder.Services.AddSerilog();
 
+            builder.Services.AddAppServices();
+            builder.Services.AddGameLogging();
+
             builder.Services.AddAvaloniaApplication<App>(appBuilder => appBuilder
                 .UseHotReload()
                 .UsePlatformDetect()
                 .WithInterFont()
+                .WithDeveloperTools()
                 .LogToTrace());
 
             using var host = builder.Build();
 
-            host.RunAvaloniaWaitForShutdown(args);
+            host.RunAvaloniaWaitForShutdown(args, (services, lifetime) =>
+            {
+                var mainWindowViewModel = services.GetRequiredService<MainWindowViewModel>();
+                lifetime.MainWindow = new MainWindow
+                {
+                    DataContext = mainWindowViewModel
+                };
+            });
         }
         catch (Exception ex)
         {

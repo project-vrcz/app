@@ -18,11 +18,18 @@
         <PackageReference Include="Avalonia.Desktop"/>
         <PackageReference Include="Avalonia.Fonts.Inter"/>
 
+        <PackageReference Include="Xaml.Behaviors.Avalonia"/>
+        <PackageReference Include="Avalonia.AvaloniaEdit"/>
+        <PackageReference Include="Semi.Avalonia.AvaloniaEdit"/>
+
         <!--Theme-->
         <PackageReference Include="Semi.Avalonia"/>
 
         <!--DevTools Suppport-->
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport"/>
+
+        <!--Mvvm-->
+        <PackageReference Include="CommunityToolkit.Mvvm"/>
 
         <!--Hot Reload Support-->
         <PackageReference Include="HotAvalonia" PrivateAssets="All" Publish="True"/>
@@ -38,6 +45,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Core\VRCZ.Core.GameLogging\VRCZ.Core.GameLogging.csproj"/>
         <ProjectReference Include="..\..\Core\VRCZ.Core.Shared\VRCZ.Core.Shared.csproj"/>
     </ItemGroup>
 </Project>
