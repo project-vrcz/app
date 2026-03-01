@@ -7,6 +7,8 @@ public static class ServiceExtension
 {
     public static IServiceCollection AddAppServices(this IServiceCollection services)
     {
+        services.AddSingleton<GameLogViewModelFactory>();
+
         services.AddSingleton<MainWindowViewModel>();
 
         return services;

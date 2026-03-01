@@ -1,0 +1,60 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModel="clr-namespace:VRCZ.App.ViewModel"
+             xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
+             xmlns:models="clr-namespace:VRCZ.Core.GameLogging.Models;assembly=VRCZ.Core.GameLogging"
+             xmlns:converters="clr-namespace:VRCZ.App.Converters"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="viewModel:GameLogViewModel"
+             x:Class="VRCZ.App.Views.GameLogView">
+
+    <UserControl.Resources>
+        <converters:TextLengthLimitConverter x:Key="TextLengthLimitConverter" />
+    </UserControl.Resources>
+
+    <Interaction.Behaviors>
+        <AttachedToVisualTreeTrigger>
+            <InvokeCommandAction Command="{Binding LoadCommand}" />
+        </AttachedToVisualTreeTrigger>
+        <DetachedFromVisualTreeTrigger>
+            <InvokeCommandAction Command="{Binding UnloadCommand}" />
+        </DetachedFromVisualTreeTrigger>
+    </Interaction.Behaviors>
+    
+    <Grid RowDefinitions="*,Auto,200">
+        <ScrollViewer>
+            <ListBox ItemsSource="{Binding LogEntities}"
+                     SelectedItem="{Binding SelectedLogEntity}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.DataTemplates>
+                    <DataTemplate x:DataType="models:GameLogEntityWithEvent">
+                        <Grid ColumnDefinitions="70,140,Auto,*">
+                            <TextBlock Text="{Binding LogEntity.LogLevel}" />
+                            <TextBlock Grid.Column="1" Text="{Binding LogEntity.Timestamp}" />
+                            <TextBlock Grid.Column="2" Text="{Binding LogEvent}" />
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding LogEntity.Message, Converter={StaticResource TextLengthLimitConverter}}"
+                                       TextTrimming="WordEllipsis"
+                                       MaxLines="1" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.DataTemplates>
+            </ListBox>
+        </ScrollViewer>
+
+        <GridSplitter Grid.Row="1" ShowsPreview="True" />
+
+        <Grid Grid.Row="2">
+            <avaloniaEdit:TextEditor Document="{Binding SelectedLogEntityDocument}"
+                                     IsReadOnly="True"
+                                     ShowLineNumbers="True"
+                                     FontFamily="Cascadia Code,Consolas,Menlo,Monospace" />
+        </Grid>
+    </Grid>
+</UserControl>

@@ -8,18 +8,32 @@ public sealed class GameLogWatcher(string pathToLogFile) : IDisposable, IAsyncDi
     public event EventHandler<GameLogEntityWithEvent>? OnLog;
     public event EventHandler<Exception>? OnException;
 
+    public bool IsRunning { get; private set; }
+
     private bool _isDisposed;
-    private bool _started;
-    private readonly CancellationTokenSource _loopCts = new();
+    private CancellationTokenSource _loopCts = new();
 
     public void Start()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
-        if (_started)
+        if (IsRunning)
             throw new InvalidOperationException("GameLog watcher has already been started.");
 
-        _started = true;
+        IsRunning = true;
         _ = Task.Factory.StartNew(() => WorkerLoopAsync(_loopCts.Token), TaskCreationOptions.LongRunning);
+    }
+
+    public async Task StopAsync()
+    {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+        if (!IsRunning)
+            throw new InvalidOperationException("GameLog watcher has not been started.");
+
+        IsRunning = false;
+        await _loopCts.CancelAsync();
+        _loopCts.Dispose();
+
+        _loopCts = new CancellationTokenSource();
     }
 
     private async Task WorkerLoopAsync(CancellationToken cancellationToken)

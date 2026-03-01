@@ -1,8 +1,13 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:semi="https://irihi.tech/semi"
+             xmlns:app="clr-namespace:VRCZ.App"
              x:Class="VRCZ.App.App"
              RequestedThemeVariant="Default">
+
+    <Application.DataTemplates>
+        <app:ViewLocator />
+    </Application.DataTemplates>
 
     <Application.Styles>
         <semi:SemiTheme />
