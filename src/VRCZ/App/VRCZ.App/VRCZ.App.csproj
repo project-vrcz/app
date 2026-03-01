@@ -23,6 +23,8 @@
         <PackageReference Include="Semi.Avalonia.AvaloniaEdit"/>
 
         <!--Theme-->
+        <PackageReference Include="Irihi.Ursa"/>
+        <PackageReference Include="Irihi.Ursa.Themes.Semi"/>
         <PackageReference Include="Semi.Avalonia"/>
 
         <!--DevTools Suppport-->

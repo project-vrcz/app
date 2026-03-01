@@ -1,4 +1,6 @@
-﻿using Avalonia.Collections;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
+using Avalonia.Collections;
 using Avalonia.Threading;
 using AvaloniaEdit.Document;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,7 +14,21 @@ public sealed partial class GameLogViewModel(string pathToLogFile) : ObservableO
 {
     private GameLogWatcher? _logWatcher;
 
+    [ObservableProperty] public partial bool ScrollToEnd { get; set; } = true;
+
+    #region Filters
+
+    public AvaloniaList<string> AvailableLogLevels { get; } = [];
+    public AvaloniaList<string> SelectedLogLevels { get; } = [];
+    [ObservableProperty] public partial string KeywordFilter { get; set; } = string.Empty;
+
+    public AvaloniaList<GameLogEntityWithEvent> FilteredLogEntities { get; } = [];
+
+    #endregion
+
     public AvaloniaList<GameLogEntityWithEvent> LogEntities { get; } = [];
+
+    #region Selected Log Entity
 
     [NotifyPropertyChangedFor(nameof(SelectedLogEntityDocument))]
     [ObservableProperty]
@@ -39,22 +55,54 @@ public sealed partial class GameLogViewModel(string pathToLogFile) : ObservableO
         }
     }
 
+    #endregion
+
     [RelayCommand]
     private async Task Load()
     {
         await TryCreateLogWatcherAsync();
+
+        PropertyChanged += OnPropertyChanged;
+        SelectedLogLevels.CollectionChanged += SelectedLogLevelsOnCollectionChanged;
     }
 
     [RelayCommand]
     private async Task Unload()
     {
+        PropertyChanged -= OnPropertyChanged;
+        SelectedLogLevels.CollectionChanged -= SelectedLogLevelsOnCollectionChanged;
+
         await TryDisposeLogWatcherAsync();
+    }
+
+    private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(KeywordFilter))
+        {
+            RecalculateFilteredLogEntities();
+        }
+    }
+
+    private void SelectedLogLevelsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        RecalculateFilteredLogEntities();
     }
 
     private void OnLogCreated(object? sender, GameLogEntityWithEvent e)
     {
-        Dispatcher.UIThread.Invoke(() => LogEntities.Add(e));
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            if (!AvailableLogLevels.Contains(e.LogEntity.LogLevel))
+            {
+                AvailableLogLevels.Add(e.LogEntity.LogLevel);
+            }
+
+            LogEntities.Add(e);
+            OnNewLogEntityAdded(e);
+        });
     }
+
+    #region Log Watcher Lifetime
 
     private async Task TryCreateLogWatcherAsync()
     {
@@ -71,6 +119,8 @@ public sealed partial class GameLogViewModel(string pathToLogFile) : ObservableO
     private async Task TryDisposeLogWatcherAsync()
     {
         LogEntities.Clear();
+        AvailableLogLevels.Clear();
+        FilteredLogEntities.Clear();
 
         if (_logWatcher is not null)
         {
@@ -79,6 +129,34 @@ public sealed partial class GameLogViewModel(string pathToLogFile) : ObservableO
             _logWatcher = null;
         }
     }
+
+    #endregion
+
+    #region Filter Calculation
+
+    private void RecalculateFilteredLogEntities()
+    {
+        var filtered = LogEntities.Where(e =>
+            (SelectedLogLevels.Count == 0 || SelectedLogLevels.Contains(e.LogEntity.LogLevel)) &&
+            (string.IsNullOrEmpty(KeywordFilter) ||
+             e.LogEntity.Message.Contains(KeywordFilter, StringComparison.OrdinalIgnoreCase))
+        ).ToList();
+
+        FilteredLogEntities.Clear();
+        FilteredLogEntities.AddRange(filtered);
+    }
+
+    private void OnNewLogEntityAdded(GameLogEntityWithEvent newEntity)
+    {
+        if ((SelectedLogLevels.Count == 0 || SelectedLogLevels.Contains(newEntity.LogEntity.LogLevel)) &&
+            (string.IsNullOrEmpty(KeywordFilter) ||
+             newEntity.LogEntity.Message.Contains(KeywordFilter, StringComparison.OrdinalIgnoreCase)))
+        {
+            FilteredLogEntities.Add(newEntity);
+        }
+    }
+
+    #endregion
 }
 
 public sealed class GameLogViewModelFactory

@@ -6,6 +6,7 @@
              xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
              xmlns:models="clr-namespace:VRCZ.Core.GameLogging.Models;assembly=VRCZ.Core.GameLogging"
              xmlns:converters="clr-namespace:VRCZ.App.Converters"
+             xmlns:u="https://irihi.tech/ursa"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="viewModel:GameLogViewModel"
              x:Class="VRCZ.App.Views.GameLogView">
@@ -22,10 +23,30 @@
             <InvokeCommandAction Command="{Binding UnloadCommand}" />
         </DetachedFromVisualTreeTrigger>
     </Interaction.Behaviors>
-    
-    <Grid RowDefinitions="*,Auto,200">
-        <ScrollViewer>
-            <ListBox ItemsSource="{Binding LogEntities}"
+
+    <Grid RowDefinitions="Auto,*,Auto,200">
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4">
+            <TextBox Text="{Binding KeywordFilter}"
+                     Watermark="Search log message..." />
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <u:IconToggleButton IsChecked="{Binding ScrollToEnd}"
+                                    Icon="{StaticResource SemiIconChevronDown}"
+                                    Content="Scroll"
+                                    ToolTip.Tip="Scroll to end"
+                                    Classes="Tertiary" />
+            </StackPanel>
+            <u:MultiComboBox
+                Grid.Column="2"
+                MaxWidth="300"
+                Watermark="Filter Log Levels"
+                ItemsSource="{Binding AvailableLogLevels}"
+                SelectedItems="{Binding SelectedLogLevels}">
+            </u:MultiComboBox>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1">
+            <ListBox Name="LogEntitiesListBox"
+                     ItemsSource="{Binding FilteredLogEntities}"
                      SelectedItem="{Binding SelectedLogEntity}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -48,9 +69,9 @@
             </ListBox>
         </ScrollViewer>
 
-        <GridSplitter Grid.Row="1" ShowsPreview="True" />
+        <GridSplitter Grid.Row="2" ShowsPreview="True" />
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <avaloniaEdit:TextEditor Document="{Binding SelectedLogEntityDocument}"
                                      IsReadOnly="True"
                                      ShowLineNumbers="True"

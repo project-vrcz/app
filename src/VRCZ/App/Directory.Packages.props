@@ -11,6 +11,8 @@
 
         <!--Theme-->
         <PackageVersion Include="Semi.Avalonia" Version="11.3.7.3"/>
+        <PackageVersion Include="Irihi.Ursa" Version="1.15.0"/>
+        <PackageVersion Include="Irihi.Ursa.Themes.Semi" Version="1.15.0"/>
         <PackageVersion Include="Xaml.Behaviors.Avalonia" Version="11.3.9.5"/>
         <PackageVersion Include="Avalonia.AvaloniaEdit" Version="11.4.1"/>
         <PackageVersion Include="Semi.Avalonia.AvaloniaEdit" Version="11.2.0.1"/>
